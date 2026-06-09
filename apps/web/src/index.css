@@ -1,0 +1,70 @@
+@import './design-system/tokens.css';
+@import './design-system/typography.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'DM Sans', sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-200);
+    color: var(--color-primary-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--border-brand);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply border border-border-subtle bg-surface-card backdrop-blur-md;
+    background-color: color-mix(in srgb, var(--surface-card) 92%, transparent);
+  }
+
+  .landing-grid {
+    background-image:
+      linear-gradient(to right, var(--color-neutral-200) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-neutral-200) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

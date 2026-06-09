@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         Role
+  facilityId   String?
+  districtId   String?
+  facility     Facility?    @relation(fields: [facilityId], references: [id])
+  district     District?    @relation(fields: [districtId], references: [id])
+  stockEntries  StockEntry[]
+  refreshTokens RefreshToken[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  isActive      Boolean        @default(true)
+  lastLoginAt   DateTime?
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum Role {
+  FACILITY_WORKER
+  DISTRICT_OFFICER
+  NMS_ADMIN
+  SUPER_ADMIN
+}
+
+model District {
+  id         String     @id @default(cuid())
+  name       String     @unique
+  region     String
+  facilities Facility[]
+  officers   User[]
+  createdAt  DateTime   @default(now())
+}
+
+model Facility {
+  id           String        @id @default(cuid())
+  name         String
+  code         String        @unique
+  level        FacilityLevel
+  districtId   String
+  district     District      @relation(fields: [districtId], references: [id])
+  latitude     Float
+  longitude    Float
+  address      String?
+  contactPhone String?
+  workers      User[]
+  stockEntries StockEntry[]
+  alerts       Alert[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  isActive     Boolean       @default(true)
+}
+
+enum FacilityLevel {
+  HC_II
+  HC_III
+  HC_IV
+  GENERAL_HOSPITAL
+  REGIONAL_REFERRAL
+}
+
+model Drug {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  genericName  String
+  category     DrugCategory
+  unit         String
+  emhsCode     String?
+  description  String?
+  stockEntries StockEntry[]
+  thresholds   Threshold[]
+  createdAt    DateTime     @default(now())
+}
+
+enum DrugCategory {
+  ANTIBIOTIC
+  ANTIMALARIAL
+  ARV
+  ANALGESIC
+  ANTIHYPERTENSIVE
+  ANTIDIABETIC
+  VACCINE
+  MATERNAL_HEALTH
+  SURGICAL_SUPPLY
+  DIAGNOSTIC
+  OTHER
+}
+
+model Threshold {
+  id            String  @id @default(cuid())
+  facilityId    String?
+  drugId        String
+  drug          Drug    @relation(fields: [drugId], references: [id])
+  lowDays       Int     @default(14)
+  criticalDays  Int     @default(7)
+  avgDailyUsage Float   @default(0)
+}
+
+model StockEntry {
+  id            String      @id @default(cuid())
+  facilityId    String
+  facility      Facility    @relation(fields: [facilityId], references: [id])
+  drugId        String
+  drug          Drug        @relation(fields: [drugId], references: [id])
+  quantity      Float
+  unit          String
+  reportedById  String
+  reportedBy    User        @relation(fields: [reportedById], references: [id])
+  entryDate     DateTime    @default(now())
+  notes         String?
+  status        StockStatus @default(ADEQUATE)
+  daysRemaining Float?
+  createdAt     DateTime    @default(now())
+
+  @@index([facilityId, drugId, entryDate])
+}
+
+enum StockStatus {
+  ADEQUATE
+  LOW
+  CRITICAL
+  STOCKOUT
+}
+
+model Alert {
+  id           String      @id @default(cuid())
+  facilityId   String
+  facility     Facility    @relation(fields: [facilityId], references: [id])
+  drugId       String?
+  drugName     String
+  severity     Severity
+  type         AlertType
+  message      String
+  status       AlertStatus @default(ACTIVE)
+  resolvedAt   DateTime?
+  resolvedById String?
+  smsDelivered Boolean     @default(false)
+  smsSentAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([facilityId, status, createdAt])
+}
+
+enum Severity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum AlertType {
+  STOCK_LOW
+  STOCK_CRITICAL
+  STOCKOUT
+  STOCK_EXPIRING
+  SYSTEM
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+  DISMISSED
+}
+
+model ResupplyRequest {
+  id            String   @id @default(cuid())
+  facilityId    String
+  facilityName  String
+  districtName  String
+  generatedAt   DateTime @default(now())
+  requestedById String
+  status        String   @default("PENDING")
+  items         Json
+  pdfUrl        String?
+}
+
+model SmsLog {
+  id          String    @id @default(cuid())
+  recipient   String
+  message     String
+  status      String
+  alertId     String?
+  provider    String    @default("AfricasTalking")
+  sentAt      DateTime  @default(now())
+  deliveredAt DateTime?
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  before    Json?
+  after     Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}

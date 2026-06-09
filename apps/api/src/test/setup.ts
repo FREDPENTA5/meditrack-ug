@@ -1,0 +1,14 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT = '3001';
+process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/meditrack_test';
+process.env.REDIS_URL = 'redis://localhost:6379';
+process.env.JWT_ACCESS_SECRET = 'test-access-secret-minimum-32-characters-long';
+process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-minimum-32-characters-long';
+process.env.AT_API_KEY = 'test-key';
+process.env.AT_USERNAME = 'sandbox';
+process.env.AT_SHORTCODE = 'TEST';
+process.env.SMTP_HOST = 'localhost';
+process.env.SMTP_PORT = '587';
+process.env.SMTP_USER = 'test';
+process.env.SMTP_PASS = 'test';
+process.env.FRONTEND_URL = 'http://localhost:5173';

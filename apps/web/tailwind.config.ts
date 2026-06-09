@@ -1,0 +1,191 @@
+import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+
+const palette = (prefix: string) => ({
+  50: `var(--color-${prefix}-50)`,
+  100: `var(--color-${prefix}-100)`,
+  200: `var(--color-${prefix}-200)`,
+  300: `var(--color-${prefix}-300)`,
+  400: `var(--color-${prefix}-400)`,
+  500: `var(--color-${prefix}-500)`,
+  600: `var(--color-${prefix}-600)`,
+  700: `var(--color-${prefix}-700)`,
+  800: `var(--color-${prefix}-800)`,
+  900: `var(--color-${prefix}-900)`,
+  950: prefix === 'primary' || prefix === 'neutral' ? `var(--color-${prefix}-950)` : undefined,
+  0: prefix === 'neutral' ? 'var(--color-neutral-0)' : undefined,
+});
+
+const config: Config = {
+  content: ['./index.html', './src/**/*.{ts,tsx}', './src/index.css'],
+  theme: {
+    extend: {
+      colors: {
+        background: 'hsl(var(--background) / <alpha-value>)',
+        foreground: 'hsl(var(--foreground) / <alpha-value>)',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        input: 'hsl(var(--input) / <alpha-value>)',
+        ring: 'hsl(var(--ring) / <alpha-value>)',
+        chart: {
+          1: 'hsl(var(--chart-1))',
+          2: 'hsl(var(--chart-2))',
+          3: 'hsl(var(--chart-3))',
+          4: 'hsl(var(--chart-4))',
+          5: 'hsl(var(--chart-5))',
+        },
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+          ...palette('primary'),
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+          ...palette('secondary'),
+        },
+        neutral: palette('neutral'),
+        danger: palette('danger'),
+        warning: palette('warning'),
+        success: palette('success'),
+        info: palette('info'),
+        surface: {
+          page: 'var(--surface-page)',
+          card: 'var(--surface-card)',
+          'card-hover': 'var(--surface-card-hover)',
+          overlay: 'var(--surface-overlay)',
+          sidebar: 'var(--surface-sidebar)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          inverse: 'var(--text-inverse)',
+          brand: 'var(--text-brand)',
+          danger: 'var(--text-danger)',
+          warning: 'var(--text-warning)',
+          success: 'var(--text-success)',
+        },
+        border: {
+          DEFAULT: 'hsl(var(--border) / <alpha-value>)',
+          subtle: 'var(--border-subtle)',
+          default: 'var(--border-default)',
+          strong: 'var(--border-strong)',
+          brand: 'var(--border-brand)',
+          danger: 'var(--border-danger)',
+          warning: 'var(--border-warning)',
+        },
+        status: {
+          adequate: 'var(--status-adequate)',
+          low: 'var(--status-low)',
+          critical: 'var(--status-critical)',
+          unknown: 'var(--status-unknown)',
+        },
+      },
+      fontFamily: {
+        heading: ['Sora', 'sans-serif'],
+        body: ['DM Sans', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      fontSize: {
+        xs: 'var(--text-xs)',
+        sm: 'var(--text-sm)',
+        base: 'var(--text-base)',
+        md: 'var(--text-md)',
+        lg: 'var(--text-lg)',
+        xl: 'var(--text-xl)',
+        '2xl': 'var(--text-2xl)',
+        '3xl': 'var(--text-3xl)',
+        '4xl': 'var(--text-4xl)',
+      },
+      spacing: {
+        0: 'var(--space-0)',
+        1: 'var(--space-1)',
+        2: 'var(--space-2)',
+        3: 'var(--space-3)',
+        4: 'var(--space-4)',
+        5: 'var(--space-5)',
+        6: 'var(--space-6)',
+        8: 'var(--space-8)',
+        10: 'var(--space-10)',
+        12: 'var(--space-12)',
+        16: 'var(--space-16)',
+        20: 'var(--space-20)',
+        24: 'var(--space-24)',
+        32: 'var(--space-32)',
+      },
+      boxShadow: {
+        xs: 'var(--shadow-xs)',
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        xl: 'var(--shadow-xl)',
+        inner: 'var(--shadow-inner)',
+        danger: 'var(--shadow-danger)',
+        warning: 'var(--shadow-warning)',
+        success: 'var(--shadow-success)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        full: 'var(--radius-full)',
+      },
+      transitionDuration: {
+        instant: 'var(--duration-instant)',
+        fast: 'var(--duration-fast)',
+        base: 'var(--duration-base)',
+        slow: 'var(--duration-slow)',
+        enter: 'var(--duration-enter)',
+        exit: 'var(--duration-exit)',
+      },
+      transitionTimingFunction: {
+        DEFAULT: 'var(--ease-default)',
+        in: 'var(--ease-in)',
+        out: 'var(--ease-out)',
+        spring: 'var(--ease-spring)',
+      },
+      maxWidth: {
+        content: 'var(--content-max-width)',
+      },
+      height: {
+        topbar: 'var(--topbar-height)',
+      },
+      width: {
+        sidebar: 'var(--sidebar-width)',
+        'sidebar-collapsed': 'var(--sidebar-collapsed)',
+      },
+      padding: {
+        sidebar: 'var(--sidebar-width)',
+        'sidebar-collapsed': 'var(--sidebar-collapsed)',
+      },
+      gridTemplateColumns: {
+        shell: 'var(--sidebar-width) minmax(0, 1fr)',
+        'shell-collapsed': 'var(--sidebar-collapsed) minmax(0, 1fr)',
+      },
+    },
+  },
+  plugins: [tailwindcssAnimate],
+};
+
+export default config;
