@@ -120,7 +120,13 @@ function SidebarNav({
       <Separator className="bg-primary-900" />
 
       <div className={cn('p-2', collapsed && 'flex justify-center')}>
-        <div className={cn('flex items-center gap-2.5 rounded-md p-2', collapsed && 'p-1.5')}>
+        <NavLink
+          to="/settings"
+          className={cn(
+            'flex items-center gap-2.5 rounded-md p-2 transition-colors hover:bg-primary-900/60',
+            collapsed && 'p-1.5',
+          )}
+        >
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary-800 text-xs text-primary-50">
               {getInitials(user.fullName)}
@@ -132,7 +138,7 @@ function SidebarNav({
               <p className="truncate text-xs text-primary-300">{formatRole(user.role)}</p>
             </div>
           )}
-        </div>
+        </NavLink>
       </div>
     </div>
   );

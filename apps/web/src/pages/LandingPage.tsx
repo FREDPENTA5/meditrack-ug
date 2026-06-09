@@ -1,145 +1,232 @@
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Bell, MapPin, Shield, Smartphone } from 'lucide-react';
-import { Button } from '../components/atoms/Button';
+import { motion } from 'framer-motion';
+import { Activity, ArrowRight, ShieldCheck, Map, Smartphone, BarChart3, Pill } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const features = [
   {
-    icon: Bell,
-    title: 'Real-time stock-out alerts',
+    icon: Pill,
+    title: 'Real-time Inventory Tracking',
     description:
-      'Instant SMS and dashboard alerts when critical drugs hit zero — before patients are turned away.',
+      'Monitor essential drug levels across all facilities instantly. Predict stock-outs before they impact patient care.',
   },
   {
-    icon: MapPin,
-    title: 'District-wide visibility',
+    icon: Map,
+    title: 'District-Wide Visibility',
     description:
-      'Officers monitor every facility on a live map with status-coded markers across Wakiso and beyond.',
+      'A comprehensive live map provides status-coded markers for every registered health center in the district.',
   },
   {
     icon: Smartphone,
-    title: 'Works on any device',
-    description: 'PWA for low-end Android over 2G/3G, plus USSD for feature phones in the field.',
+    title: 'Accessible Anywhere',
+    description:
+      'Designed as a progressive web app optimized for low-bandwidth environments and mobile devices.',
   },
   {
-    icon: Shield,
-    title: 'Data you can trust',
+    icon: ShieldCheck,
+    title: 'Secure & Compliant',
     description:
-      'Role-based access, audit logs, and integrity-first design for high-stakes health decisions.',
+      'Role-based access controls, strict audit trails, and encrypted data storage aligned with Ministry of Health standards.',
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+};
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-surface-page">
-      <header className="glass-panel sticky top-0 z-30 border-b">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600 text-white shadow-sm">
-              <Activity className="h-[18px] w-[18px]" aria-hidden="true" />
+    <div className="min-h-screen bg-background selection:bg-primary/20">
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl transition-all duration-300">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
+          <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm ring-1 ring-primary/20">
+              <Activity className="h-5 w-5" aria-hidden="true" />
             </div>
-            <span className="font-heading text-lg font-bold text-text-primary">MediTrack UG</span>
-          </div>
-          <div className="flex items-center gap-3">
+            <span className="font-heading text-lg font-bold tracking-tight">MediTrack UG</span>
+          </Link>
+          <div className="flex items-center gap-4">
             <Link
               to="/auth/login"
-              className="hidden text-sm font-medium text-text-secondary transition-colors hover:text-text-primary sm:block"
+              className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
             >
               Sign in
             </Link>
-            <Link to="/auth/login">
-              <Button size="sm">Get started</Button>
-            </Link>
+            <Button asChild size="sm" className="rounded-full px-5 shadow-sm">
+              <Link to="/auth/login">Get started</Link>
+            </Button>
           </div>
         </div>
       </header>
 
-      <section className="relative overflow-hidden">
-        <div className="landing-grid absolute inset-0 opacity-40" aria-hidden="true" />
-        <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:py-28">
-          <div className="max-w-3xl">
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-700">
-              Uganda health facilities
-            </p>
-            <h1 className="font-heading text-4xl font-bold leading-[1.1] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
-              Stop drug stock-outs before they cost lives
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary">
-              MediTrack UG connects facility pharmacies with district health authorities in real
-              time — starting with Gayaza Hospital, Wakiso District.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/auth/login">
-                <Button size="lg" className="inline-flex items-center gap-2">
-                  Sign in to dashboard
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      <main>
+        {/* Hero Section */}
+        <section className="relative overflow-hidden pt-24 pb-32 lg:pt-36">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(20,184,166,0.15),rgba(255,255,255,0))]" />
+          <div className="landing-grid absolute inset-0 -z-10 opacity-[0.15]" aria-hidden="true" />
+
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <motion.div
+              className="mx-auto max-w-3xl text-center"
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+              <motion.div
+                variants={itemVariants}
+                className="mb-6 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
+              >
+                <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse" />
+                Live in Wakiso District
+              </motion.div>
+
+              <motion.h1
+                variants={itemVariants}
+                className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:leading-[1.1]"
+              >
+                Prevent Drug Stock-outs. <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
+                  Save Lives.
+                </span>
+              </motion.h1>
+
+              <motion.p
+                variants={itemVariants}
+                className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+              >
+                A unified platform connecting health facilities with district authorities for
+                real-time inventory visibility and proactive supply chain management.
+              </motion.p>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full sm:w-auto rounded-full px-8 h-12 shadow-lg shadow-primary/20 transition-transform hover:scale-105"
+                >
+                  <Link to="/auth/login">
+                    Access Dashboard
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
-              </Link>
-              <a href="#features">
-                <Button variant="outline" size="lg">
-                  Learn more
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto rounded-full px-8 h-12"
+                >
+                  <a href="#features">Explore Features</a>
                 </Button>
-              </a>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7, ease: 'easeOut' }}
+              className="mx-auto mt-20 max-w-5xl rounded-2xl border bg-card/50 p-2 shadow-2xl backdrop-blur-sm ring-1 ring-white/10"
+            >
+              <div className="grid grid-cols-1 gap-0.5 overflow-hidden rounded-xl bg-border sm:grid-cols-3">
+                {[
+                  { value: '84%', label: 'Faster response times', icon: BarChart3 },
+                  { value: '< 15 min', label: 'Average alert delivery', icon: Activity },
+                  { value: '24/7', label: 'Continuous monitoring', icon: Map },
+                ].map((stat) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div
+                      key={stat.label}
+                      className="bg-card p-8 sm:p-10 transition-colors hover:bg-card/80"
+                    >
+                      <Icon className="h-6 w-6 text-primary mb-4 opacity-80" />
+                      <p className="font-heading text-4xl font-bold tracking-tight text-foreground">
+                        {stat.value}
+                      </p>
+                      <p className="mt-2 text-sm font-medium text-muted-foreground">{stat.label}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="relative py-24 sm:py-32 bg-muted/30">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl text-center mb-16">
+              <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Purpose-built for healthcare logistics
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Everything you need to maintain continuous stock availability, designed with input
+                from clinical officers.
+              </p>
+            </div>
+
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={feature.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    className="group relative rounded-2xl border bg-card p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/30"
+                  >
+                    <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                    <h3 className="mb-3 font-heading text-lg font-semibold text-foreground">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {feature.description}
+                    </p>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
+        </section>
+      </main>
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-3">
-            {[
-              { value: '84%', label: 'of facilities report stock-outs' },
-              { value: '< 15 min', label: 'alert delivery target' },
-              { value: '24/7', label: 'district visibility' },
-            ].map((stat) => (
-              <div key={stat.label} className="glass-panel rounded-xl p-5 shadow-sm">
-                <p className="font-heading text-2xl font-bold text-primary-600">{stat.value}</p>
-                <p className="mt-1 text-sm text-text-secondary">{stat.label}</p>
-              </div>
-            ))}
+      <footer className="border-t bg-card py-12">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 sm:flex-row lg:px-8">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Activity className="h-4 w-4" />
+            <span>© {new Date().getFullYear()} MediTrack UG. Aligned with MoH guidelines.</span>
           </div>
-        </div>
-      </section>
-
-      <section
-        id="features"
-        className="border-t border-border-subtle bg-surface-card py-16 sm:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-12 max-w-2xl">
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-text-primary">
-              Built for the reality of Ugandan health centres
-            </h2>
-            <p className="mt-3 text-text-secondary">
-              Clinical confidence — clear, authoritative, and instantly scannable under pressure.
-            </p>
+          <div className="flex gap-6">
+            <Link
+              to="/auth/login"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Staff Portal
+            </Link>
+            <a
+              href="#"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Support
+            </a>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <article
-                  key={feature.title}
-                  className="group rounded-xl border border-border-subtle bg-surface-page p-6 transition-all hover:border-primary-200 hover:shadow-md"
-                >
-                  <div className="mb-4 inline-flex rounded-xl bg-primary-50 p-3 text-primary-600 ring-1 ring-primary-100 transition-colors group-hover:bg-primary-100">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <h3 className="font-heading text-lg font-semibold text-text-primary">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                    {feature.description}
-                  </p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <footer className="border-t border-border-subtle py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-sm text-text-tertiary sm:flex-row sm:px-6">
-          <p>© {new Date().getFullYear()} MediTrack UG · Ministry of Health aligned</p>
-          <Link to="/auth/login" className="font-medium text-text-brand hover:text-primary-700">
-            Staff sign in →
-          </Link>
         </div>
       </footer>
     </div>

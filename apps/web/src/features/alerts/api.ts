@@ -1,5 +1,5 @@
-import type { ApiResponse, UpdateAlertStatusInput } from '@meditrack/shared';
-import { api } from '@/lib/api';
+import type { UpdateAlertStatusInput } from '@meditrack/shared';
+import { supabase } from '@/lib/supabase';
 
 export interface AlertItem {
   id: string;
@@ -24,25 +24,126 @@ export async function fetchAlerts(params?: {
   status?: string;
   severity?: string;
 }) {
-  const response = await api.get<ApiResponse<AlertItem[]>>('/alerts', { params });
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to load alerts');
+  let query = supabase
+    .from('alerts')
+    .select('*, facilities(name, code)', { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (params?.status) {
+    query = query.eq('status', params.status);
   }
-  return { items: response.data.data, meta: response.data.meta };
+  if (params?.severity) {
+    query = query.eq('severity', params.severity);
+  }
+
+  // Pagination logic (if needed)
+  if (params?.page && params?.pageSize) {
+    const from = (params.page - 1) * params.pageSize;
+    const to = from + params.pageSize - 1;
+    query = query.range(from, to);
+  } else {
+    // Default limit
+    query = query.limit(50);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load alerts');
+  }
+
+  const items: AlertItem[] = data.map((d: any) => ({
+    id: d.id,
+    facilityId: d.facility_id,
+    facilityName: d.facilities?.name || 'Unknown Facility',
+    facilityCode: d.facilities?.code,
+    drugId: d.drug_id,
+    drugName: d.drug_name,
+    severity: d.severity,
+    type: d.type,
+    message: d.message,
+    status: d.status,
+    smsDelivered: d.sms_delivered,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at,
+    resolvedAt: d.resolved_at,
+  }));
+
+  return {
+    items,
+    meta: {
+      total: count || items.length,
+      page: params?.page || 1,
+      pageSize: params?.pageSize || 50,
+      totalPages: count && params?.pageSize ? Math.ceil(count / params.pageSize) : 1,
+    },
+  };
 }
 
 export async function fetchAlert(id: string): Promise<AlertItem> {
-  const response = await api.get<ApiResponse<AlertItem>>(`/alerts/${id}`);
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Alert not found');
+  const { data: d, error } = await supabase
+    .from('alerts')
+    .select('*, facilities(name, code)')
+    .eq('id', id)
+    .single();
+
+  if (error || !d) {
+    throw new Error(error?.message || 'Alert not found');
   }
-  return response.data.data;
+
+  return {
+    id: d.id,
+    facilityId: d.facility_id,
+    facilityName: d.facilities?.name || 'Unknown Facility',
+    facilityCode: d.facilities?.code,
+    drugId: d.drug_id,
+    drugName: d.drug_name,
+    severity: d.severity,
+    type: d.type,
+    message: d.message,
+    status: d.status,
+    smsDelivered: d.sms_delivered,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at,
+    resolvedAt: d.resolved_at,
+  };
 }
 
 export async function updateAlertStatus(id: string, input: UpdateAlertStatusInput) {
-  const response = await api.patch<ApiResponse<AlertItem>>(`/alerts/${id}/status`, input);
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to update alert');
+  const updates: any = {
+    status: input.status,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (input.status === 'RESOLVED') {
+    updates.resolved_at = new Date().toISOString();
   }
-  return response.data.data;
+
+  const { data: d, error } = await supabase
+    .from('alerts')
+    .update(updates)
+    .eq('id', id)
+    .select('*, facilities(name, code)')
+    .single();
+
+  if (error || !d) {
+    throw new Error(error?.message || 'Failed to update alert');
+  }
+
+  return {
+    id: d.id,
+    facilityId: d.facility_id,
+    facilityName: d.facilities?.name || 'Unknown Facility',
+    facilityCode: d.facilities?.code,
+    drugId: d.drug_id,
+    drugName: d.drug_name,
+    severity: d.severity,
+    type: d.type,
+    message: d.message,
+    status: d.status,
+    smsDelivered: d.sms_delivered,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at,
+    resolvedAt: d.resolved_at,
+  } as AlertItem;
 }

@@ -1,6 +1,6 @@
-import type { ApiResponse } from '@meditrack/shared';
-import { api } from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 import type { StockRow } from '@/features/stock/api';
+import { fetchFacilityStock as fetchStockFromStockApi } from '@/features/stock/api';
 
 export interface FacilityListItem {
   id: string;
@@ -21,25 +21,56 @@ export interface FacilityDetail extends FacilityListItem {
 }
 
 export async function fetchFacilities(): Promise<FacilityListItem[]> {
-  const response = await api.get<ApiResponse<FacilityListItem[]>>('/facilities');
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to load facilities');
+  const { data, error } = await supabase.from('facilities').select(`*, districts(name)`);
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load facilities');
   }
-  return response.data.data;
+
+  return (data || []).map((f: any) => ({
+    id: f.id,
+    name: f.name,
+    code: f.code,
+    level: f.level,
+    districtId: f.district_id,
+    districtName: f.districts?.name || 'Unknown',
+    latitude: f.latitude,
+    longitude: f.longitude,
+    address: f.address,
+    contactPhone: f.contact_phone,
+    isActive: f.is_active,
+  }));
 }
 
 export async function fetchFacility(id: string): Promise<FacilityDetail> {
-  const response = await api.get<ApiResponse<FacilityDetail>>(`/facilities/${id}`);
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Facility not found');
+  const { data, error } = await supabase
+    .from('facilities')
+    .select(`*, districts(name)`)
+    .eq('id', id)
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Facility not found');
   }
-  return response.data.data;
+
+  // To fetch workers we would join users table, but users references auth.users
+  // For now we will return an empty array for workers since we don't have user seed data yet
+  return {
+    id: data.id,
+    name: data.name,
+    code: data.code,
+    level: data.level,
+    districtId: data.district_id,
+    districtName: data.districts?.name || 'Unknown',
+    latitude: data.latitude,
+    longitude: data.longitude,
+    address: data.address,
+    contactPhone: data.contact_phone,
+    isActive: data.is_active,
+    workers: [],
+  };
 }
 
 export async function fetchFacilityStock(id: string): Promise<StockRow[]> {
-  const response = await api.get<ApiResponse<StockRow[]>>(`/facilities/${id}/stock`);
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to load facility stock');
-  }
-  return response.data.data;
+  return fetchStockFromStockApi(id);
 }
