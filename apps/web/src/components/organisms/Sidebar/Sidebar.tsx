@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -139,8 +139,7 @@ function SidebarNav({
 }
 
 export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
-  const { sidebarOpen, sidebarCollapsed, setSidebarOpen, toggleSidebarCollapsed } =
-    useLayoutStore();
+  const { sidebarOpen, sidebarCollapsed, setSidebarOpen } = useLayoutStore();
 
   if (variant === 'mobile') {
     return (
@@ -179,21 +178,10 @@ export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'sticky top-0 hidden h-screen flex-col border-r lg:flex',
+        'sticky top-0 hidden h-screen shrink-0 flex-col border-r transition-[width] duration-200 ease-out lg:flex',
         sidebarCollapsed ? 'w-sidebar-collapsed' : 'w-sidebar',
       )}
     >
-      <div className="absolute -right-3 top-[calc(var(--topbar-height)/2)] z-10 hidden -translate-y-1/2 lg:block">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-6 w-6 rounded-full shadow-sm"
-          onClick={toggleSidebarCollapsed}
-          aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          <ChevronLeft className={cn('h-3.5 w-3.5', sidebarCollapsed && 'rotate-180')} />
-        </Button>
-      </div>
       <SidebarNav collapsed={sidebarCollapsed} alertCount={alertCount} />
     </aside>
   );

@@ -1,5 +1,4 @@
 import type { LucideIcon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/cn';
 
 export type StatTileVariant = 'default' | 'adequate' | 'low' | 'critical';
@@ -11,12 +10,13 @@ export interface StatTileProps {
   variant?: StatTileVariant;
   subtitle?: string;
   className?: string;
+  emphasize?: boolean;
 }
 
 const valueStyles: Record<StatTileVariant, string> = {
   default: 'text-foreground',
-  adequate: 'text-success-700',
-  low: 'text-warning-700',
+  adequate: 'text-foreground',
+  low: 'text-foreground',
   critical: 'text-destructive',
 };
 
@@ -27,21 +27,41 @@ export function StatTile({
   variant = 'default',
   subtitle,
   className,
+  emphasize = false,
 }: StatTileProps) {
+  const numericValue = typeof value === 'number' ? value : Number(value);
+  const shouldEmphasize =
+    emphasize || variant === 'critical' || (variant === 'low' && numericValue > 0);
+
   return (
-    <Card className={className}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
-      </CardHeader>
-      <CardContent>
-        <p
-          className={cn('text-2xl font-semibold tabular-nums tracking-tight', valueStyles[variant])}
-        >
-          {value}
+    <div className={cn('bg-card px-5 py-4 sm:px-6 sm:py-5', className)}>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          {label}
         </p>
-        {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
-      </CardContent>
-    </Card>
+        {Icon && (
+          <Icon
+            className={cn(
+              'h-4 w-4 shrink-0',
+              shouldEmphasize && variant === 'critical'
+                ? 'text-destructive/70'
+                : shouldEmphasize && variant === 'low'
+                  ? 'text-warning-600/70'
+                  : 'text-muted-foreground/60',
+            )}
+            aria-hidden="true"
+          />
+        )}
+      </div>
+      <p
+        className={cn(
+          'mt-2 font-heading text-3xl font-bold tabular-nums tracking-tight',
+          shouldEmphasize ? valueStyles[variant] : 'text-foreground',
+        )}
+      >
+        {value}
+      </p>
+      {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
+    </div>
   );
 }

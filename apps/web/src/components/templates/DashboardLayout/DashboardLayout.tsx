@@ -16,7 +16,7 @@ export function DashboardLayout() {
 
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar alertCount={alertCount} />
-          <main className="flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
+          <main className="flex-1 bg-muted/30 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             <div className="mx-auto max-w-content">
               <Outlet />
             </div>

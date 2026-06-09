@@ -36,8 +36,20 @@ export type {
   BatchStockEntryInput,
 } from './schemas/stock';
 
-export { SeveritySchema, AlertTypeSchema, AlertStatusSchema, AlertSchema } from './schemas/alert';
-export type { Severity, AlertType, AlertStatus, Alert } from './schemas/alert';
+export {
+  SeveritySchema,
+  AlertTypeSchema,
+  AlertStatusSchema,
+  AlertSchema,
+  UpdateAlertStatusSchema,
+} from './schemas/alert';
+export type {
+  Severity,
+  AlertType,
+  AlertStatus,
+  Alert,
+  UpdateAlertStatusInput,
+} from './schemas/alert';
 
 export {
   DashboardSummarySchema,
@@ -46,5 +58,11 @@ export {
 } from './schemas/dashboard';
 export type { DashboardSummary, FacilityMapCollection } from './schemas/dashboard';
 
-export { PaginationQuerySchema, DrugListQuerySchema } from './schemas/query';
-export type { PaginationQuery, DrugListQuery } from './schemas/query';
+export { PaginationQuerySchema, DrugListQuerySchema, AlertListQuerySchema } from './schemas/query';
+export type { PaginationQuery, DrugListQuery, AlertListQuery } from './schemas/query';
+
+export { UpdateProfileSchema, UpdateUserStatusSchema, UserListItemSchema } from './schemas/user';
+export type { UpdateProfileInput, UpdateUserStatusInput, UserListItem } from './schemas/user';
+
+export { ReportSummarySchema } from './schemas/report';
+export type { ReportSummary } from './schemas/report';

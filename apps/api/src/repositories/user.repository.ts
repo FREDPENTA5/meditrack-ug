@@ -16,4 +16,34 @@ export const userRepository = {
       data: { lastLoginAt: new Date() },
     });
   },
+
+  findMany(scope: { districtId?: string }) {
+    return prisma.user.findMany({
+      where: {
+        ...(scope.districtId ? { districtId: scope.districtId } : {}),
+      },
+      include: {
+        facility: { select: { name: true } },
+        district: { select: { name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  updateProfile(id: string, data: { fullName: string; phone?: string | null }) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        fullName: data.fullName,
+        phone: data.phone ?? null,
+      },
+    });
+  },
+
+  setActive(id: string, isActive: boolean) {
+    return prisma.user.update({
+      where: { id },
+      data: { isActive },
+    });
+  },
 };

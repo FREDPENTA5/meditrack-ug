@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, LogOut, Menu, Settings, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, ChevronDown, LogOut, Menu, PanelLeft, Settings, User } from 'lucide-react';
 import { SearchInput } from '@/components/molecules/SearchInput';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -11,15 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
 import { getContextLabel } from '@/lib/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useLayoutStore } from '@/stores/layoutStore';
@@ -42,14 +33,12 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
   const user = useAuthStore((state) => state.user);
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const toggleSidebar = useLayoutStore((state) => state.toggleSidebar);
-  const location = useLocation();
+  const toggleSidebarCollapsed = useLayoutStore((state) => state.toggleSidebarCollapsed);
   const navigate = useNavigate();
 
   if (!user) return null;
 
   const contextLabel = getContextLabel(user);
-  const pageName =
-    location.pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') ?? 'dashboard';
 
   const handleLogout = async () => {
     try {
@@ -73,9 +62,18 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
           <Menu className="h-5 w-5" />
         </Button>
 
-        <div className="hidden min-w-0 items-center gap-2 sm:flex">
-          <span className="text-xs font-medium text-muted-foreground">Scope</span>
-          <Button variant="outline" size="sm" className="h-8 max-w-[200px] gap-1.5 font-medium">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden shrink-0 lg:inline-flex"
+          onClick={toggleSidebarCollapsed}
+          aria-label="Toggle sidebar"
+        >
+          <PanelLeft className="h-5 w-5" />
+        </Button>
+
+        <div className="hidden min-w-0 sm:block">
+          <Button variant="outline" size="sm" className="h-8 max-w-[220px] gap-1.5 font-medium">
             <span className="truncate">{contextLabel}</span>
             <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
           </Button>
@@ -140,23 +138,6 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
-
-      <Separator />
-      <div className="hidden px-6 py-2 lg:block">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="capitalize">{pageName}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
       </div>
     </header>
   );

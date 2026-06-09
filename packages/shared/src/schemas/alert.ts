@@ -32,4 +32,9 @@ export const AlertSchema = z.object({
 export type Severity = z.infer<typeof SeveritySchema>;
 export type AlertType = z.infer<typeof AlertTypeSchema>;
 export type AlertStatus = z.infer<typeof AlertStatusSchema>;
+export const UpdateAlertStatusSchema = z.object({
+  status: z.enum(['ACKNOWLEDGED', 'RESOLVED', 'DISMISSED']),
+});
+
 export type Alert = z.infer<typeof AlertSchema>;
+export type UpdateAlertStatusInput = z.infer<typeof UpdateAlertStatusSchema>;

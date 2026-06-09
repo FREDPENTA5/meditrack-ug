@@ -8,7 +8,14 @@ import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import DashboardPage from './pages/DashboardPage';
-import PlaceholderPage from './pages/PlaceholderPage';
+import StockEntryPage from './pages/stock/StockEntryPage';
+import AlertsPage from './pages/alerts/AlertsPage';
+import AlertDetailPage from './pages/alerts/AlertDetailPage';
+import FacilitiesPage from './pages/facilities/FacilitiesPage';
+import FacilityDetailPage from './pages/facilities/FacilityDetailPage';
+import ReportsPage from './pages/reports/ReportsPage';
+import UsersPage from './pages/users/UsersPage';
+import SettingsPage from './pages/settings/SettingsPage';
 
 function App() {
   return (
@@ -37,60 +44,14 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route
-            path="/facilities"
-            element={
-              <PlaceholderPage
-                title="Facilities"
-                description="Monitor all registered health facilities in your district or nationally."
-              />
-            }
-          />
-          <Route
-            path="/stock-entry"
-            element={
-              <PlaceholderPage
-                title="Stock Entry"
-                description="Log current drug quantities for your facility."
-              />
-            }
-          />
-          <Route
-            path="/alerts"
-            element={
-              <PlaceholderPage
-                title="Alerts"
-                description="Active and historical stock alerts across your scope."
-              />
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <PlaceholderPage
-                title="Reports"
-                description="Generate stock history and alert summary reports."
-              />
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <PlaceholderPage
-                title="User Management"
-                description="Manage facility workers, district officers, and administrators."
-              />
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <PlaceholderPage
-                title="Settings"
-                description="Profile and notification preferences."
-              />
-            }
-          />
+          <Route path="/facilities" element={<FacilitiesPage />} />
+          <Route path="/facilities/:id" element={<FacilityDetailPage />} />
+          <Route path="/stock-entry" element={<StockEntryPage />} />
+          <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/alerts/:id" element={<AlertDetailPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -107,4 +107,36 @@ export const authController = {
       return next(error);
     }
   },
+
+  async updateProfile(
+    req: Request,
+    res: Response<ApiResponse<LoginResponse['user']>>,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+        });
+      }
+
+      const { userService } = await import('../services/user.service');
+      const updated = await userService.updateProfile(req.user.sub, req.body);
+
+      return res.json({
+        success: true,
+        data: {
+          id: updated.id,
+          email: updated.email,
+          fullName: updated.fullName,
+          role: updated.role,
+          facilityId: updated.facilityId,
+          districtId: updated.districtId,
+        },
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
