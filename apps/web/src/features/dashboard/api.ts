@@ -125,25 +125,19 @@ export async function fetchRecentAlerts(limit = 10): Promise<DashboardAlert[]> {
   const { data, error } = await query;
   if (error) throw new Error(error.message);
 
-  return (data || []).map((a: {
-    id: string;
-    facility_id: string;
-    drug_name: string;
-    severity: string;
-    type: string;
-    message: string;
-    status: string;
-    created_at: string;
-    facilities: { name: string } | null;
-  }) => ({
-    id: a.id,
-    facilityId: a.facility_id,
-    facilityName: a.facilities?.name || 'Unknown Facility',
-    drugName: a.drug_name || 'Unknown Drug',
-    severity: a.severity as DashboardAlert['severity'],
-    type: a.type,
-    message: a.message,
-    status: a.status,
-    createdAt: a.created_at,
-  }));
+  return (data || []).map((row) => {
+    const facility = Array.isArray(row.facilities) ? row.facilities[0] : row.facilities;
+
+    return {
+      id: row.id,
+      facilityId: row.facility_id,
+      facilityName: facility?.name || 'Unknown Facility',
+      drugName: row.drug_name || 'Unknown Drug',
+      severity: row.severity as DashboardAlert['severity'],
+      type: row.type,
+      message: row.message,
+      status: row.status,
+      createdAt: row.created_at,
+    };
+  });
 }

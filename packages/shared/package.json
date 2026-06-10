@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/**/*.ts --format cjs --dts --outDir dist",
+    "build": "tsup src/index.ts --format cjs --dts --outDir dist",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",

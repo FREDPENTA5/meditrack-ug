@@ -1,7 +1,6 @@
 import type { ReportSummary } from '@meditrack/shared';
 import { countActiveAlerts, fetchFacilitiesWithLatestStock } from '@/lib/facilityStock';
 import { requireAuthProfile } from '@/lib/authUser';
-import { summarizeStatuses } from '@/lib/stockStatus';
 import { supabase } from '@/lib/supabase';
 
 export async function fetchReportSummary(): Promise<ReportSummary> {
