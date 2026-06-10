@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsc && esbuild src/**/*.ts --outdir=dist --format=cjs",
+    "build": "tsup src/**/*.ts --format cjs --dts --outDir dist",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
@@ -24,6 +24,6 @@
   "devDependencies": {
     "typescript": "^5.7.2",
     "vitest": "^2.1.8",
-    "esbuild": "^0.24.0"
+    "tsup": "^8.3.5"
   }
 }
