@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import axios from 'axios';
-import type { ApiResponse, LoginResponse } from '@meditrack/shared';
 import { Spinner } from '../../../components/atoms/Spinner';
-import { API_BASE_URL } from '../../../lib/apiBase';
+import { fetchAuthProfile } from '../../../lib/authUser';
+import { supabase } from '../../../lib/supabase';
 import { useAuthStore } from '../../../stores/authStore';
 
 interface AuthBootstrapProps {
@@ -16,27 +15,55 @@ export function AuthBootstrap({ children }: AuthBootstrapProps) {
   const setBootstrapped = useAuthStore((state) => state.setBootstrapped);
 
   useEffect(() => {
-    async function bootstrap() {
-      try {
-        const response = await axios.post<ApiResponse<LoginResponse>>(
-          `${API_BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true },
-        );
+    let active = true;
 
-        if (response.data.success && response.data.data) {
-          setAuth(response.data.data.user, response.data.data.accessToken);
+    async function restoreSession() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!active) return;
+
+        if (session?.user) {
+          const profile = await fetchAuthProfile(session.user.id);
+          setAuth(profile, session.access_token);
         } else {
           clearAuth();
         }
       } catch {
-        clearAuth();
+        if (active) clearAuth();
       } finally {
-        setBootstrapped(true);
+        if (active) setBootstrapped(true);
       }
     }
 
-    bootstrap();
+    restoreSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!active) return;
+
+      if (event === 'SIGNED_OUT' || !session?.user) {
+        clearAuth();
+        return;
+      }
+
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+        try {
+          const profile = await fetchAuthProfile(session.user.id);
+          setAuth(profile, session.access_token);
+        } catch {
+          clearAuth();
+        }
+      }
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, [setAuth, clearAuth, setBootstrapped]);
 
   if (!isBootstrapped) {

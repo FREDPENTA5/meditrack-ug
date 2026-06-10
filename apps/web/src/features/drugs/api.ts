@@ -1,12 +1,28 @@
-import type { ApiResponse, Drug } from '@meditrack/shared';
-import { api } from '@/lib/api';
+import type { Drug } from '@meditrack/shared';
+import { supabase } from '@/lib/supabase';
 
 export async function fetchDrugs(search?: string): Promise<Drug[]> {
-  const response = await api.get<ApiResponse<Drug[]>>('/drugs', {
-    params: { page: 1, pageSize: 100, search },
-  });
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to load drugs');
+  let query = supabase.from('drugs').select('*').order('name').limit(100);
+
+  if (search?.trim()) {
+    const term = `%${search.trim()}%`;
+    query = query.or(`name.ilike.${term},generic_name.ilike.${term}`);
   }
-  return response.data.data;
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load drugs');
+  }
+
+  return (data || []).map((row) => ({
+    id: row.id,
+    name: row.name,
+    genericName: row.generic_name,
+    category: row.category,
+    unit: row.unit,
+    emhsCode: row.emhs_code,
+    description: row.description,
+    createdAt: new Date(row.created_at),
+  }));
 }

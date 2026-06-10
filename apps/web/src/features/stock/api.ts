@@ -64,13 +64,23 @@ export async function fetchFacilityStock(facilityId: string): Promise<StockRow[]
 
 export async function submitStockEntry(payload: BatchStockEntryInput) {
   const { entries, facilityId, reportedById } = payload;
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    throw new Error('Not authenticated');
+  }
+
   const inserts = entries.map((e) => ({
     facility_id: facilityId,
     drug_id: e.drugId,
     quantity: e.quantity,
     unit: e.unit || 'Units',
-    reported_by_id: reportedById || '00000000-0000-0000-0000-000000000000', // Needs actual user ID
-    status: 'ADEQUATE', // Simplified for now
+    reported_by_id: reportedById || user.id,
+    status: 'ADEQUATE',
     notes: e.notes,
   }));
 

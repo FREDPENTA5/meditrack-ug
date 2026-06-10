@@ -1,4 +1,12 @@
 import type { DashboardSummary, FacilityMapCollection } from '@meditrack/shared';
+import { requireAuthProfile } from '../../lib/authUser';
+import {
+  countActiveAlerts,
+  countStockoutsToday,
+  fetchFacilitiesWithLatestStock,
+} from '../../lib/facilityStock';
+import { summarizeStatuses, worstStatus } from '../../lib/stockStatus';
+import { getFacilityScope } from '../../lib/scope';
 import { supabase } from '../../lib/supabase';
 
 export interface DashboardAlert {
@@ -14,58 +22,74 @@ export interface DashboardAlert {
 }
 
 export async function fetchDashboardSummary(): Promise<DashboardSummary> {
-  // Since we are migrating, we can simulate the summary using multiple queries or just return a dummy shape
-  // if complex aggregations aren't fully migrated. For now, we do basic queries:
-  const { count: facilitiesCount } = await supabase
-    .from('facilities')
-    .select('*', { count: 'exact', head: true });
-  const { count: stockoutsCount } = await supabase
-    .from('stock_entries')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'STOCKOUT');
-  const { count: lowStockCount } = await supabase
-    .from('stock_entries')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'LOW');
-  const { count: alertsCount } = await supabase
-    .from('alerts')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'ACTIVE');
+  const user = await requireAuthProfile();
+  const scope = getFacilityScope(user);
+
+  if (user.role === 'FACILITY_WORKER' && scope.facilityId) {
+    const facilities = await fetchFacilitiesWithLatestStock(user);
+    const facility = facilities[0];
+    const statuses = Array.from(facility?.latestByDrug.values() ?? []);
+    const counts = summarizeStatuses(statuses);
+
+    return {
+      drugsOk: counts.adequate,
+      drugsLow: counts.low + counts.critical,
+      drugsAtZero: counts.stockout,
+      unresolvedAlerts: await countActiveAlerts(user),
+    };
+  }
+
+  const facilities = await fetchFacilitiesWithLatestStock(user);
+  let lowStockDrugs = 0;
+
+  for (const facility of facilities) {
+    for (const status of facility.latestByDrug.values()) {
+      if (status === 'LOW' || status === 'CRITICAL') lowStockDrugs += 1;
+    }
+  }
 
   return {
-    totalFacilities: facilitiesCount || 0,
-    stockoutsToday: stockoutsCount || 0,
-    lowStockDrugs: lowStockCount || 0,
-    unresolvedAlerts: alertsCount || 0,
-    // Facility worker specific
-    drugsOk: 0,
-    drugsLow: 0,
-    drugsAtZero: 0,
+    totalFacilities: facilities.length,
+    stockoutsToday: await countStockoutsToday(user),
+    lowStockDrugs,
+    unresolvedAlerts: await countActiveAlerts(user),
   };
 }
 
 export async function fetchDashboardMap(): Promise<FacilityMapCollection> {
-  const { data, error } = await supabase.from('facilities').select('*').eq('is_active', true);
-  if (error) throw error;
+  const user = await requireAuthProfile();
+  const facilities = await fetchFacilitiesWithLatestStock(user);
 
   return {
     type: 'FeatureCollection',
-    features: (data || []).map((f) => ({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [f.longitude, f.latitude] },
-      properties: {
-        id: f.id,
-        name: f.name,
-        code: f.code,
-        status: 'OK', // Derive from actual status later
-        stockoutCount: 0,
-      },
-    })),
+    features: facilities.map((facility) => {
+      const statuses = Array.from(facility.latestByDrug.values());
+      const status = statuses.length ? worstStatus(statuses) : 'ADEQUATE';
+      const criticalDrugs = statuses.filter((s) => s === 'STOCKOUT' || s === 'CRITICAL').length;
+
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [facility.longitude, facility.latitude] as [number, number],
+        },
+        properties: {
+          id: facility.id,
+          name: facility.name,
+          code: facility.code,
+          status,
+          criticalDrugs,
+        },
+      };
+    }),
   };
 }
 
 export async function fetchRecentAlerts(limit = 10): Promise<DashboardAlert[]> {
-  const { data, error } = await supabase
+  const user = await requireAuthProfile();
+  const scope = getFacilityScope(user);
+
+  let query = supabase
     .from('alerts')
     .select(
       `
@@ -83,14 +107,40 @@ export async function fetchRecentAlerts(limit = 10): Promise<DashboardAlert[]> {
     .order('created_at', { ascending: false })
     .limit(limit);
 
-  if (error) throw error;
+  if (scope.facilityId) {
+    query = query.eq('facility_id', scope.facilityId);
+  } else if (scope.districtId) {
+    const { data: districtFacilities, error } = await supabase
+      .from('facilities')
+      .select('id')
+      .eq('district_id', scope.districtId);
 
-  return (data || []).map((a: any) => ({
+    if (error) throw new Error(error.message);
+
+    const ids = (districtFacilities || []).map((f) => f.id);
+    if (!ids.length) return [];
+    query = query.in('facility_id', ids);
+  }
+
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+
+  return (data || []).map((a: {
+    id: string;
+    facility_id: string;
+    drug_name: string;
+    severity: string;
+    type: string;
+    message: string;
+    status: string;
+    created_at: string;
+    facilities: { name: string } | null;
+  }) => ({
     id: a.id,
     facilityId: a.facility_id,
     facilityName: a.facilities?.name || 'Unknown Facility',
     drugName: a.drug_name || 'Unknown Drug',
-    severity: a.severity as any,
+    severity: a.severity as DashboardAlert['severity'],
     type: a.type,
     message: a.message,
     status: a.status,

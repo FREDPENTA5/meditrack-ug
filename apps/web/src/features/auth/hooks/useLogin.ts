@@ -1,15 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { isAxiosError } from 'axios';
 import type { LoginInput } from '@meditrack/shared';
 import { loginRequest } from '../api';
 import { useAuthStore } from '../../../stores/authStore';
 
 function getLoginErrorMessage(error: unknown): string {
-  if (isAxiosError(error)) {
-    return error.response?.data?.error?.message ?? 'Invalid email or password';
-  }
-
   if (error instanceof Error) {
     return error.message;
   }
