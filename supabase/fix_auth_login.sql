@@ -1,7 +1,10 @@
--- Run this in Supabase Dashboard → SQL Editor (after init schema + seed)
--- No Supabase CLI required.
+-- RUN THIS IN SUPABASE → SQL Editor
+-- Fixes "Database error querying schema" on login
+-- Cause: manually seeded auth.users rows have NULL token columns; GoTrue expects ''
 
--- Ensure login works for seeded users (NULL token cols cause "Database error querying schema")
+BEGIN;
+
+-- 1. Fix NULL token columns on demo users
 UPDATE auth.users
 SET
   confirmation_token = COALESCE(confirmation_token, ''),
@@ -16,6 +19,7 @@ SET
   email_confirmed_at = COALESCE(email_confirmed_at, now())
 WHERE email IN ('admin@nms.ug', 'dho@wakiso.ug', 'pharmacist@gayaza.ug');
 
+-- 2. Ensure auth.identities exist (required for email login)
 INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at)
 SELECT
   gen_random_uuid(),
@@ -32,30 +36,12 @@ WHERE u.email IN ('admin@nms.ug', 'dho@wakiso.ug', 'pharmacist@gayaza.ug')
     SELECT 1 FROM auth.identities i WHERE i.user_id = u.id AND i.provider = 'email'
   );
 
--- Extra read policies
-CREATE POLICY "Allow authenticated read thresholds"
-  ON public.thresholds FOR SELECT TO authenticated USING (true);
+-- 3. Fix provider_id on existing identities (must be email, not uuid)
+UPDATE auth.identities i
+SET provider_id = u.email
+FROM auth.users u
+WHERE i.user_id = u.id
+  AND i.provider = 'email'
+  AND i.provider_id <> u.email;
 
--- Write policies for the web app
-CREATE POLICY "Users can update own profile"
-  ON public.users FOR UPDATE TO authenticated
-  USING (id = auth.uid())
-  WITH CHECK (id = auth.uid());
-
-CREATE POLICY "Admins can update user status"
-  ON public.users FOR UPDATE TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.users admin
-      WHERE admin.id = auth.uid()
-        AND admin.role IN ('NMS_ADMIN', 'SUPER_ADMIN')
-    )
-  );
-
-CREATE POLICY "Authenticated can update alerts"
-  ON public.alerts FOR UPDATE TO authenticated
-  USING (true);
-
-CREATE POLICY "Workers can insert stock entries"
-  ON public.stock_entries FOR INSERT TO authenticated
-  WITH CHECK (reported_by_id = auth.uid());
+COMMIT;
