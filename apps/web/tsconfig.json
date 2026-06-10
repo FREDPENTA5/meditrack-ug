@@ -18,7 +18,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@meditrack/shared": ["../../packages/shared/src/index.ts"]
     }
   },
   "include": ["src"]
