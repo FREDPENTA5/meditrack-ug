@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs --dts --outDir dist",
+    "build": "tsup src/index.ts --format cjs --outDir dist && tsc --emitDeclarationOnly --declarationMap --outDir dist",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
@@ -23,7 +23,7 @@
     "tsup": "^8.3.5"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
+    "typescript": "5.7.2",
     "vitest": "^2.1.8"
   }
 }
