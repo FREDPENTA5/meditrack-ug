@@ -74,3 +74,69 @@ export async function fetchFacility(id: string): Promise<FacilityDetail> {
 export async function fetchFacilityStock(id: string): Promise<StockRow[]> {
   return fetchStockFromStockApi(id);
 }
+
+export interface DistrictOption {
+  id: string;
+  name: string;
+}
+
+export async function fetchDistricts(): Promise<DistrictOption[]> {
+  const { data, error } = await supabase.from('districts').select('id, name').order('name');
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((d: any) => ({ id: d.id, name: d.name }));
+}
+
+export interface CreateFacilityInput {
+  name: string;
+  code: string;
+  level: string;
+  districtId: string;
+  latitude: number;
+  longitude: number;
+  address?: string;
+  contactPhone?: string;
+}
+
+export async function createFacility(input: CreateFacilityInput): Promise<FacilityListItem> {
+  const { data, error } = await supabase
+    .from('facilities')
+    .insert({
+      name: input.name,
+      code: input.code,
+      level: input.level,
+      district_id: input.districtId,
+      latitude: input.latitude,
+      longitude: input.longitude,
+      address: input.address || null,
+      contact_phone: input.contactPhone || null,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .select('*, districts(name)')
+    .single();
+
+  if (error || !data) throw new Error(error?.message ?? 'Failed to create facility');
+
+  return {
+    id: data.id,
+    name: data.name,
+    code: data.code,
+    level: data.level,
+    districtId: data.district_id,
+    districtName: (data as any).districts?.name ?? 'Unknown',
+    latitude: data.latitude,
+    longitude: data.longitude,
+    address: data.address,
+    contactPhone: data.contact_phone,
+    isActive: data.is_active,
+  };
+}
+
+export async function setFacilityActive(id: string, isActive: boolean): Promise<void> {
+  const { error } = await supabase
+    .from('facilities')
+    .update({ is_active: isActive, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+}

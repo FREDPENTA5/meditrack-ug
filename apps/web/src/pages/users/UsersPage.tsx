@@ -29,6 +29,7 @@ export default function UsersPage() {
   const setActive = useSetUserActive();
   const createUser = useCreateUser();
   const [isCreating, setIsCreating] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const {
     register,
@@ -41,8 +42,12 @@ export default function UsersPage() {
   });
 
   const onSubmit = (data: RegisterInput) => {
+    setSuccessMsg('');
     createUser.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (created) => {
+        setSuccessMsg(
+          `✓ User "${created.fullName}" created. They will receive a confirmation email to activate their account.`,
+        );
         setIsCreating(false);
         reset();
       },
@@ -55,11 +60,22 @@ export default function UsersPage() {
         title="User Management"
         description="Manage facility workers, district officers, and administrators"
         action={
-          <Button onClick={() => setIsCreating(!isCreating)}>
+          <Button
+            onClick={() => {
+              setIsCreating(!isCreating);
+              setSuccessMsg('');
+            }}
+          >
             {isCreating ? 'Cancel' : 'Create User'}
           </Button>
         }
       />
+
+      {successMsg && (
+        <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          {successMsg}
+        </div>
+      )}
 
       {isCreating && (
         <DashboardSection eyebrow="New" title="Create User">
@@ -101,6 +117,12 @@ export default function UsersPage() {
                   </select>
                   {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
                 </div>
+                {createUser.isError && (
+                  <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                    {(createUser.error as Error)?.message ??
+                      'Failed to create user. Please try again.'}
+                  </div>
+                )}
                 <div className="flex gap-2 pt-2">
                   <Button type="submit" loading={createUser.isPending}>
                     Save User
