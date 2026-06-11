@@ -53,7 +53,7 @@ export const userService = {
       throw new AppError('Email already in use', 400, 'BAD_REQUEST');
     }
 
-    const { hashPassword } = await import('./auth.service');
+    const { hashPassword } = await import('../utils/password');
     const passwordHash = await hashPassword(input.password);
 
     const user = await userRepository.create({

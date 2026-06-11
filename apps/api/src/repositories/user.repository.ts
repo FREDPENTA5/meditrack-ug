@@ -60,7 +60,7 @@ export const userRepository = {
         email: data.email,
         passwordHash: data.passwordHash,
         fullName: data.fullName,
-        role: data.role,
+        role: data.role as import('@prisma/client').Role,
         facilityId: data.facilityId,
         districtId: data.districtId,
         isActive: true,
