@@ -43,6 +43,35 @@ export const userService = {
     return users.map(mapUser);
   },
 
+  async create(actor: AccessTokenPayload, input: import('@meditrack/shared').RegisterInput) {
+    if (actor.role !== 'NMS_ADMIN' && actor.role !== 'SUPER_ADMIN') {
+      throw new AppError('Access denied', 403, 'FORBIDDEN');
+    }
+
+    const existing = await userRepository.findByEmail(input.email.toLowerCase());
+    if (existing) {
+      throw new AppError('Email already in use', 400, 'BAD_REQUEST');
+    }
+
+    const { hashPassword } = await import('./auth.service');
+    const passwordHash = await hashPassword(input.password);
+
+    const user = await userRepository.create({
+      email: input.email.toLowerCase(),
+      passwordHash,
+      fullName: input.fullName,
+      role: input.role,
+      facilityId: input.facilityId,
+      districtId: input.districtId,
+    });
+
+    return mapUser({
+      ...user,
+      facility: null,
+      district: null,
+    });
+  },
+
   async updateProfile(userId: string, input: UpdateProfileInput) {
     const updated = await userRepository.updateProfile(userId, input);
     return {

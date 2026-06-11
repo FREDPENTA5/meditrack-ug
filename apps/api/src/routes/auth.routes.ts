@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { LoginSchema, UpdateProfileSchema } from '@meditrack/shared';
+import { LoginSchema, RegisterSchema, UpdateProfileSchema } from '@meditrack/shared';
 import { validateBody } from '../middleware/validate';
 import { authController } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/authenticate';

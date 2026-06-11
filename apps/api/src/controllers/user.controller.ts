@@ -14,6 +14,16 @@ export const userController = {
     }
   },
 
+  async create(req: Request, res: Response<ApiResponse<unknown>>, next: NextFunction) {
+    try {
+      if (!req.user) throw new AppError('Authentication required', 401, 'UNAUTHORIZED');
+      const data = await userService.create(req.user, req.body);
+      return res.status(201).json({ success: true, data });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
   async setActive(req: Request, res: Response<ApiResponse<unknown>>, next: NextFunction) {
     try {
       if (!req.user) throw new AppError('Authentication required', 401, 'UNAUTHORIZED');

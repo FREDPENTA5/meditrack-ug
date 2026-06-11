@@ -39,6 +39,9 @@ export default defineConfig({
       '@meditrack/shared': path.resolve(__dirname, '../../packages/shared/src/index.ts'),
     },
   },
+  optimizeDeps: {
+    include: ['@meditrack/shared'],
+  },
   server: {
     port: 5173,
     proxy: {

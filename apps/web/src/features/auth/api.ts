@@ -1,6 +1,8 @@
-import type { AuthUser, LoginInput, LoginResponse } from '@meditrack/shared';
+import type { AuthUser, LoginInput, RegisterInput, LoginResponse } from '@meditrack/shared';
+import type { ApiResponse } from '@meditrack/shared';
 import { fetchAuthProfile } from '../../lib/authUser';
 import { supabase } from '../../lib/supabase';
+import { api } from '../../lib/api';
 
 export async function loginRequest(input: LoginInput): Promise<LoginResponse> {
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -9,7 +11,9 @@ export async function loginRequest(input: LoginInput): Promise<LoginResponse> {
   });
 
   if (error) {
-    throw new Error(error.message === 'Invalid login credentials' ? 'Invalid email or password' : error.message);
+    throw new Error(
+      error.message === 'Invalid login credentials' ? 'Invalid email or password' : error.message,
+    );
   }
 
   if (!data.session || !data.user) {
@@ -27,6 +31,18 @@ export async function loginRequest(input: LoginInput): Promise<LoginResponse> {
     user,
     accessToken: data.session.access_token,
   };
+}
+
+export async function registerRequest(
+  input: RegisterInput,
+): Promise<{ user: LoginResponse['user'] }> {
+  const response = await api.post<ApiResponse<{ user: LoginResponse['user'] }>>('/users', input);
+
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.error?.message ?? 'Registration failed');
+  }
+
+  return response.data.data;
 }
 
 export async function logoutRequest(): Promise<void> {

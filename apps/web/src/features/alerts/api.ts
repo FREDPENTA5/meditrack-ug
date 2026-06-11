@@ -1,5 +1,5 @@
 import type { UpdateAlertStatusInput } from '@meditrack/shared';
-import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 
 export interface AlertItem {
   id: string;
@@ -24,126 +24,94 @@ export async function fetchAlerts(params?: {
   status?: string;
   severity?: string;
 }) {
-  let query = supabase
-    .from('alerts')
-    .select('*, facilities(name, code)', { count: 'exact' })
-    .order('created_at', { ascending: false });
+  const query: Record<string, string | number> = {};
+  if (params?.page) query.page = params.page;
+  if (params?.pageSize) query.pageSize = params.pageSize;
+  if (params?.status) query.status = params.status;
+  if (params?.severity) query.severity = params.severity;
 
-  if (params?.status) {
-    query = query.eq('status', params.status);
-  }
-  if (params?.severity) {
-    query = query.eq('severity', params.severity);
-  }
+  const { data: resp } = await api.get('/alerts', { params: query });
 
-  // Pagination logic (if needed)
-  if (params?.page && params?.pageSize) {
-    const from = (params.page - 1) * params.pageSize;
-    const to = from + params.pageSize - 1;
-    query = query.range(from, to);
-  } else {
-    // Default limit
-    query = query.limit(50);
+  if (!resp.success) {
+    throw new Error(resp.error?.message || 'Failed to load alerts');
   }
 
-  const { data, error, count } = await query;
-
-  if (error) {
-    throw new Error(error.message || 'Failed to load alerts');
-  }
-
-  const items: AlertItem[] = data.map((d: any) => ({
+  const items: AlertItem[] = (resp.data || []).map((d: any) => ({
     id: d.id,
-    facilityId: d.facility_id,
-    facilityName: d.facilities?.name || 'Unknown Facility',
-    facilityCode: d.facilities?.code,
-    drugId: d.drug_id,
-    drugName: d.drug_name,
+    facilityId: d.facilityId,
+    facilityName: d.facilityName || 'Unknown Facility',
+    facilityCode: d.facilityCode,
+    drugId: d.drugId,
+    drugName: d.drugName,
     severity: d.severity,
     type: d.type,
     message: d.message,
     status: d.status,
-    smsDelivered: d.sms_delivered,
-    createdAt: d.created_at,
-    updatedAt: d.updated_at,
-    resolvedAt: d.resolved_at,
+    smsDelivered: d.smsDelivered,
+    createdAt: d.createdAt,
+    updatedAt: d.updatedAt,
+    resolvedAt: d.resolvedAt,
   }));
 
   return {
     items,
-    meta: {
-      total: count || items.length,
+    meta: resp.meta || {
+      total: items.length,
       page: params?.page || 1,
       pageSize: params?.pageSize || 50,
-      totalPages: count && params?.pageSize ? Math.ceil(count / params.pageSize) : 1,
+      totalPages: 1,
     },
   };
 }
 
 export async function fetchAlert(id: string): Promise<AlertItem> {
-  const { data: d, error } = await supabase
-    .from('alerts')
-    .select('*, facilities(name, code)')
-    .eq('id', id)
-    .single();
+  const { data: resp } = await api.get(`/alerts/${id}`);
 
-  if (error || !d) {
-    throw new Error(error?.message || 'Alert not found');
+  if (!resp.success || !resp.data) {
+    throw new Error(resp.error?.message || 'Alert not found');
   }
 
+  const d = resp.data;
   return {
     id: d.id,
-    facilityId: d.facility_id,
-    facilityName: d.facilities?.name || 'Unknown Facility',
-    facilityCode: d.facilities?.code,
-    drugId: d.drug_id,
-    drugName: d.drug_name,
+    facilityId: d.facilityId,
+    facilityName: d.facilityName || 'Unknown Facility',
+    facilityCode: d.facilityCode,
+    drugId: d.drugId,
+    drugName: d.drugName,
     severity: d.severity,
     type: d.type,
     message: d.message,
     status: d.status,
-    smsDelivered: d.sms_delivered,
-    createdAt: d.created_at,
-    updatedAt: d.updated_at,
-    resolvedAt: d.resolved_at,
+    smsDelivered: d.smsDelivered,
+    createdAt: d.createdAt,
+    updatedAt: d.updatedAt,
+    resolvedAt: d.resolvedAt,
   };
 }
 
 export async function updateAlertStatus(id: string, input: UpdateAlertStatusInput) {
-  const updates: any = {
-    status: input.status,
-    updated_at: new Date().toISOString(),
-  };
+  const { data: resp } = await api.patch(`/alerts/${id}/status`, input);
 
-  if (input.status === 'RESOLVED') {
-    updates.resolved_at = new Date().toISOString();
+  if (!resp.success || !resp.data) {
+    throw new Error(resp.error?.message || 'Failed to update alert');
   }
 
-  const { data: d, error } = await supabase
-    .from('alerts')
-    .update(updates)
-    .eq('id', id)
-    .select('*, facilities(name, code)')
-    .single();
-
-  if (error || !d) {
-    throw new Error(error?.message || 'Failed to update alert');
-  }
-
+  const d = resp.data;
   return {
     id: d.id,
-    facilityId: d.facility_id,
-    facilityName: d.facilities?.name || 'Unknown Facility',
-    facilityCode: d.facilities?.code,
-    drugId: d.drug_id,
-    drugName: d.drug_name,
+    facilityId: d.facilityId,
+    facilityName: d.facilityName || 'Unknown Facility',
+    facilityCode: d.facilityCode,
+    drugId: d.drugId,
+    drugName: d.drugName,
     severity: d.severity,
     type: d.type,
     message: d.message,
     status: d.status,
-    smsDelivered: d.sms_delivered,
-    createdAt: d.created_at,
-    updatedAt: d.updated_at,
-    resolvedAt: d.resolved_at,
+    smsDelivered: d.smsDelivered,
+    createdAt: d.createdAt,
+    updatedAt: d.updatedAt,
+    resolvedAt: d.resolvedAt,
   } as AlertItem;
 }

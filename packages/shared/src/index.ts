@@ -3,6 +3,7 @@ export type { ApiResponse } from './types/api';
 export {
   RoleSchema,
   LoginSchema,
+  RegisterSchema,
   ForgotPasswordSchema,
   ResetPasswordSchema,
   AuthUserSchema,
@@ -11,6 +12,7 @@ export {
 export type {
   Role,
   LoginInput,
+  RegisterInput,
   ForgotPasswordInput,
   ResetPasswordInput,
   AuthUser,

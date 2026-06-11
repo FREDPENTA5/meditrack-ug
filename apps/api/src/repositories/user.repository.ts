@@ -46,4 +46,25 @@ export const userRepository = {
       data: { isActive },
     });
   },
+
+  create(data: {
+    email: string;
+    passwordHash: string;
+    fullName: string;
+    role: string;
+    facilityId?: string | null;
+    districtId?: string | null;
+  }) {
+    return prisma.user.create({
+      data: {
+        email: data.email,
+        passwordHash: data.passwordHash,
+        fullName: data.fullName,
+        role: data.role,
+        facilityId: data.facilityId,
+        districtId: data.districtId,
+        isActive: true,
+      },
+    });
+  },
 };

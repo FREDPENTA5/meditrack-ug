@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import { format } from 'date-fns';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RegisterSchema } from '@meditrack/shared';
+import type { RegisterInput } from '@meditrack/shared';
 import { PageHeader } from '@/components/molecules/PageHeader';
 import { DashboardSection } from '@/components/molecules/DashboardSection';
 import { EmptyState } from '@/components/molecules/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/atoms/Button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -15,18 +22,98 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatRole } from '@/lib/navigation';
-import { useSetUserActive, useUsers } from '@/features/users/hooks/useUsers';
+import { useSetUserActive, useUsers, useCreateUser } from '@/features/users/hooks/useUsers';
 
 export default function UsersPage() {
   const users = useUsers();
   const setActive = useSetUserActive();
+  const createUser = useCreateUser();
+  const [isCreating, setIsCreating] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: { role: 'FACILITY_WORKER' },
+  });
+
+  const onSubmit = (data: RegisterInput) => {
+    createUser.mutate(data, {
+      onSuccess: () => {
+        setIsCreating(false);
+        reset();
+      },
+    });
+  };
 
   return (
     <div className="space-y-8">
       <PageHeader
         title="User Management"
         description="Manage facility workers, district officers, and administrators"
+        action={
+          <Button onClick={() => setIsCreating(!isCreating)}>
+            {isCreating ? 'Cancel' : 'Create User'}
+          </Button>
+        }
       />
+
+      {isCreating && (
+        <DashboardSection eyebrow="New" title="Create User">
+          <Card className="shadow-sm">
+            <CardContent className="p-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input id="fullName" {...register('fullName')} />
+                  {errors.fullName && (
+                    <p className="text-sm text-destructive">{errors.fullName.message}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" {...register('email')} />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email.message}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" type="password" {...register('password')} />
+                  {errors.password && (
+                    <p className="text-sm text-destructive">{errors.password.message}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="role">Role</Label>
+                  <select
+                    id="role"
+                    {...register('role')}
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  >
+                    <option value="FACILITY_WORKER">Facility Worker</option>
+                    <option value="DISTRICT_OFFICER">District Officer</option>
+                    <option value="NMS_ADMIN">NMS Admin</option>
+                    <option value="SUPER_ADMIN">Super Admin</option>
+                  </select>
+                  {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button type="submit" loading={createUser.isPending}>
+                    Save User
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsCreating(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </DashboardSection>
+      )}
 
       <DashboardSection eyebrow="Accounts" title="All users">
         <Card className="shadow-sm">
@@ -71,7 +158,7 @@ export default function UsersPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          disabled={setActive.isPending}
+                          loading={setActive.isPending && setActive.variables?.id === u.id}
                           onClick={() => setActive.mutate({ id: u.id, isActive: !u.isActive })}
                         >
                           {u.isActive ? 'Disable' : 'Enable'}

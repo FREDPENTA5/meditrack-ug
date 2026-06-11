@@ -27,6 +27,16 @@ export async function fetchUsers(): Promise<UserListItem[]> {
   }));
 }
 
+export async function createUser(
+  input: import('@meditrack/shared').RegisterInput,
+): Promise<UserListItem> {
+  const response = await api.post<ApiResponse<UserListItem>>('/users', input);
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.error?.message ?? 'Failed to create user');
+  }
+  return response.data.data;
+}
+
 export async function setUserActive(id: string, isActive: boolean) {
   const { data, error } = await supabase
     .from('users')
