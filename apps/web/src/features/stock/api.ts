@@ -63,7 +63,7 @@ export async function fetchFacilityStock(facilityId: string): Promise<StockRow[]
 }
 
 export async function submitStockEntry(payload: BatchStockEntryInput) {
-  const { entries, facilityId, reportedById } = payload;
+  const { entries, facilityId } = payload;
 
   const {
     data: { user },
@@ -74,19 +74,60 @@ export async function submitStockEntry(payload: BatchStockEntryInput) {
     throw new Error('Not authenticated');
   }
 
-  const inserts = entries.map((e) => ({
-    facility_id: facilityId,
-    drug_id: e.drugId,
-    quantity: e.quantity,
-    unit: e.unit || 'Units',
-    reported_by_id: reportedById || user.id,
-    status: 'ADEQUATE',
-    notes: e.notes,
-  }));
+  // For each entry, fetch the drug threshold and calculate real stock status
+  const inserts = await Promise.all(
+    entries.map(async (e) => {
+      // Fetch threshold for this drug+facility (falls back to drug-level threshold)
+      const { data: thresholds } = await supabase
+        .from('thresholds')
+        .select('low_days, critical_days, avg_daily_usage')
+        .eq('drug_id', e.drugId)
+        .or(`facility_id.eq.${facilityId},facility_id.is.null`)
+        .order('facility_id', { ascending: false }) // facility-specific wins over global
+        .limit(1);
+
+      const threshold = thresholds?.[0] ?? {
+        low_days: 14,
+        critical_days: 7,
+        avg_daily_usage: 10,
+      };
+
+      const qty = Number(e.quantity);
+      let status: string;
+      let daysRemaining: number | null = null;
+
+      if (qty === 0) {
+        status = 'STOCKOUT';
+        daysRemaining = 0;
+      } else if (threshold.avg_daily_usage <= 0) {
+        status = 'ADEQUATE';
+      } else {
+        daysRemaining = qty / threshold.avg_daily_usage;
+        if (daysRemaining > threshold.low_days) {
+          status = 'ADEQUATE';
+        } else if (daysRemaining > threshold.critical_days) {
+          status = 'LOW';
+        } else {
+          status = 'CRITICAL';
+        }
+      }
+
+      return {
+        facility_id: facilityId,
+        drug_id: e.drugId,
+        quantity: qty,
+        unit: e.unit || 'Units',
+        reported_by_id: user.id,
+        entry_date: new Date().toISOString(),
+        status,
+        days_remaining: daysRemaining,
+        notes: e.notes ?? null,
+      };
+    }),
+  );
 
   const { error } = await supabase.from('stock_entries').insert(inserts);
-  if (error) {
-    throw new Error(error.message || 'Failed to submit stock');
-  }
+  if (error) throw new Error(error.message || 'Failed to submit stock');
+
   return true;
 }
