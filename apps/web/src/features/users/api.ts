@@ -1,4 +1,5 @@
-import type { UserListItem } from '@meditrack/shared';
+import type { UserListItem, ApiResponse, RegisterInput } from '@meditrack/shared';
+import { api } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 
 export async function fetchUsers(): Promise<UserListItem[]> {
@@ -27,14 +28,86 @@ export async function fetchUsers(): Promise<UserListItem[]> {
   }));
 }
 
-export async function createUser(
-  input: import('@meditrack/shared').RegisterInput,
-): Promise<UserListItem> {
-  const response = await api.post<ApiResponse<UserListItem>>('/users', input);
-  if (!response.data.success || !response.data.data) {
-    throw new Error(response.data.error?.message ?? 'Failed to create user');
+export async function createUser(input: RegisterInput): Promise<UserListItem> {
+  // Step 1: Create the Supabase Auth user so they can log in.
+  // signUp creates the auth.users record; email confirmation is off for admin-created users.
+  const { data: authData, error: signUpError } = await supabase.auth.signUp({
+    email: input.email,
+    password: input.password,
+    options: {
+      // Prevent Supabase from auto-signing in as the new user
+      emailRedirectTo: undefined,
+      data: {
+        full_name: input.fullName,
+        role: input.role,
+      },
+    },
+  });
+
+  if (signUpError) throw new Error(signUpError.message);
+  if (!authData.user) throw new Error('Failed to create auth user');
+
+  const userId = authData.user.id;
+
+  // Step 2: Insert the application profile into public.users.
+  // This may already exist if a DB trigger created it on auth.users insert.
+  const { data: existing } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (!existing) {
+    const { error: insertError } = await supabase.from('users').insert({
+      id: userId,
+      email: input.email,
+      full_name: input.fullName,
+      role: input.role,
+      facility_id: input.facilityId ?? null,
+      district_id: input.districtId ?? null,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+
+    if (insertError) throw new Error(insertError.message);
+  } else {
+    // Profile exists (created by trigger) — update role and name
+    await supabase
+      .from('users')
+      .update({
+        full_name: input.fullName,
+        role: input.role,
+        facility_id: input.facilityId ?? null,
+        district_id: input.districtId ?? null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', userId);
   }
-  return response.data.data;
+
+  // Step 3: Return the created user profile
+  const { data: profile, error: fetchError } = await supabase
+    .from('users')
+    .select('*, facilities(name), districts(name)')
+    .eq('id', userId)
+    .single();
+
+  if (fetchError || !profile) throw new Error(fetchError?.message ?? 'Failed to fetch new user');
+
+  return {
+    id: profile.id,
+    email: profile.email,
+    fullName: profile.full_name,
+    phone: profile.phone ?? null,
+    role: profile.role,
+    facilityId: profile.facility_id,
+    districtId: profile.district_id,
+    facilityName: profile.facilities?.name ?? null,
+    districtName: profile.districts?.name ?? null,
+    isActive: profile.is_active,
+    lastLoginAt: profile.last_login_at ? new Date(profile.last_login_at) : null,
+    createdAt: new Date(profile.created_at),
+  };
 }
 
 export async function setUserActive(id: string, isActive: boolean) {

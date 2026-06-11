@@ -39,6 +39,19 @@ export async function fetchDashboardSummary(): Promise<DashboardSummary> {
     };
   }
 
+  // Count facilities directly — does NOT require stock entries to exist.
+  // Scope: district officers see their district, admins see all.
+  let countQuery = supabase.from('facilities').select('*', { count: 'exact', head: true });
+
+  if (scope.facilityId) {
+    countQuery = countQuery.eq('id', scope.facilityId);
+  } else if (scope.districtId) {
+    countQuery = countQuery.eq('district_id', scope.districtId);
+  }
+
+  const { count: totalFacilities } = await countQuery;
+
+  // Compute low-stock drugs from the stock-aware fetch (may return 0 if no entries yet).
   const facilities = await fetchFacilitiesWithLatestStock(user);
   let lowStockDrugs = 0;
 
@@ -49,7 +62,7 @@ export async function fetchDashboardSummary(): Promise<DashboardSummary> {
   }
 
   return {
-    totalFacilities: facilities.length,
+    totalFacilities: totalFacilities ?? 0,
     stockoutsToday: await countStockoutsToday(user),
     lowStockDrugs,
     unresolvedAlerts: await countActiveAlerts(user),
