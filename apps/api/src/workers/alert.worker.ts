@@ -28,7 +28,7 @@ export const alertWorker = new Worker<AlertJobData>(
     }
   },
   {
-    connection: redis,
+    connection: redis as any,
     concurrency: 5, // Process up to 5 alerts concurrently
   },
 );

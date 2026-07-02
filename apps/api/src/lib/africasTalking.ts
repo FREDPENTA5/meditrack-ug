@@ -1,4 +1,4 @@
-import Africastalking from 'africastalking';
+const Africastalking = require('africastalking');
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
 
