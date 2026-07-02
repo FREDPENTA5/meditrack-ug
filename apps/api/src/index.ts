@@ -11,6 +11,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { logger } from './utils/logger';
 
 loadEnv();
+import './workers/alert.worker'; // Initialize the BullMQ worker
 
 const app = express();
 const port = env.PORT;

@@ -8,33 +8,38 @@ datasource db {
 }
 
 model User {
-  id           String       @id @default(cuid())
-  email        String       @unique
-  passwordHash String
-  fullName     String
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String         @map("password_hash")
+  fullName     String         @map("full_name")
   phone        String?
   role         Role
-  facilityId   String?
-  districtId   String?
-  facility     Facility?    @relation(fields: [facilityId], references: [id])
-  district     District?    @relation(fields: [districtId], references: [id])
-  stockEntries  StockEntry[]
+  facilityId   String?        @map("facility_id")
+  districtId   String?        @map("district_id")
+  facility     Facility?      @relation(fields: [facilityId], references: [id])
+  district     District?      @relation(fields: [districtId], references: [id])
+  stockEntries StockEntry[]
   refreshTokens RefreshToken[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  isActive      Boolean        @default(true)
-  lastLoginAt   DateTime?
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  isActive     Boolean        @default(true) @map("is_active")
+  lastLoginAt  DateTime?      @map("last_login_at")
+
+  @@map("users")
+  
 }
 
 model RefreshToken {
-  id        String   @id @default(cuid())
-  userId    String
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId])
+  @@map("refresh_tokens")
+  
 }
 
 enum Role {
@@ -42,34 +47,42 @@ enum Role {
   DISTRICT_OFFICER
   NMS_ADMIN
   SUPER_ADMIN
+
+  @@map("role")
 }
 
 model District {
-  id         String     @id @default(cuid())
+  id         String     @id @default(uuid())
   name       String     @unique
   region     String
   facilities Facility[]
   officers   User[]
-  createdAt  DateTime   @default(now())
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  @@map("districts")
+  
 }
 
 model Facility {
-  id           String        @id @default(cuid())
+  id           String        @id @default(uuid())
   name         String
   code         String        @unique
   level        FacilityLevel
-  districtId   String
+  districtId   String        @map("district_id")
   district     District      @relation(fields: [districtId], references: [id])
   latitude     Float
   longitude    Float
   address      String?
-  contactPhone String?
+  contactPhone String?       @map("contact_phone")
   workers      User[]
   stockEntries StockEntry[]
   alerts       Alert[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  isActive     Boolean       @default(true) @map("is_active")
+
+  @@map("facilities")
+  
 }
 
 enum FacilityLevel {
@@ -78,19 +91,24 @@ enum FacilityLevel {
   HC_IV
   GENERAL_HOSPITAL
   REGIONAL_REFERRAL
+
+  @@map("facility_level")
 }
 
 model Drug {
-  id           String       @id @default(cuid())
+  id           String       @id @default(uuid())
   name         String       @unique
-  genericName  String
+  genericName  String       @map("generic_name")
   category     DrugCategory
   unit         String
-  emhsCode     String?
+  emhsCode     String?      @map("emhs_code")
   description  String?
   stockEntries StockEntry[]
   thresholds   Threshold[]
-  createdAt    DateTime     @default(now())
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@map("drugs")
+  
 }
 
 enum DrugCategory {
@@ -105,35 +123,42 @@ enum DrugCategory {
   SURGICAL_SUPPLY
   DIAGNOSTIC
   OTHER
+
+  @@map("drug_category")
 }
 
 model Threshold {
-  id            String  @id @default(cuid())
-  facilityId    String?
-  drugId        String
+  id            String  @id @default(uuid())
+  facilityId    String? @map("facility_id")
+  drugId        String  @map("drug_id")
   drug          Drug    @relation(fields: [drugId], references: [id])
-  lowDays       Int     @default(14)
-  criticalDays  Int     @default(7)
-  avgDailyUsage Float   @default(0)
+  lowDays       Int     @default(14) @map("low_days")
+  criticalDays  Int     @default(7) @map("critical_days")
+  avgDailyUsage Float   @default(0) @map("avg_daily_usage")
+
+  @@map("thresholds")
+  
 }
 
 model StockEntry {
-  id            String      @id @default(cuid())
-  facilityId    String
+  id            String      @id @default(uuid())
+  facilityId    String      @map("facility_id")
   facility      Facility    @relation(fields: [facilityId], references: [id])
-  drugId        String
+  drugId        String      @map("drug_id")
   drug          Drug        @relation(fields: [drugId], references: [id])
   quantity      Float
   unit          String
-  reportedById  String
+  reportedById  String      @map("reported_by_id")
   reportedBy    User        @relation(fields: [reportedById], references: [id])
-  entryDate     DateTime    @default(now())
+  entryDate     DateTime    @default(now()) @map("entry_date")
   notes         String?
   status        StockStatus @default(ADEQUATE)
-  daysRemaining Float?
-  createdAt     DateTime    @default(now())
+  daysRemaining Float?      @map("days_remaining")
+  createdAt     DateTime    @default(now()) @map("created_at")
 
   @@index([facilityId, drugId, entryDate])
+  @@map("stock_entries")
+  
 }
 
 enum StockStatus {
@@ -141,32 +166,38 @@ enum StockStatus {
   LOW
   CRITICAL
   STOCKOUT
+
+  @@map("stock_status")
 }
 
 model Alert {
-  id           String      @id @default(cuid())
-  facilityId   String
+  id           String      @id @default(uuid())
+  facilityId   String      @map("facility_id")
   facility     Facility    @relation(fields: [facilityId], references: [id])
-  drugId       String?
-  drugName     String
+  drugId       String?     @map("drug_id")
+  drugName     String      @map("drug_name")
   severity     Severity
   type         AlertType
   message      String
   status       AlertStatus @default(ACTIVE)
-  resolvedAt   DateTime?
-  resolvedById String?
-  smsDelivered Boolean     @default(false)
-  smsSentAt    DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  resolvedAt   DateTime?   @map("resolved_at")
+  resolvedById String?     @map("resolved_by_id")
+  smsDelivered Boolean     @default(false) @map("sms_delivered")
+  smsSentAt    DateTime?   @map("sms_sent_at")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
 
   @@index([facilityId, status, createdAt])
+  @@map("alerts")
+  
 }
 
 enum Severity {
   INFO
   WARNING
   CRITICAL
+
+  @@map("severity")
 }
 
 enum AlertType {
@@ -175,6 +206,8 @@ enum AlertType {
   STOCKOUT
   STOCK_EXPIRING
   SYSTEM
+
+  @@map("alert_type")
 }
 
 enum AlertStatus {
@@ -182,40 +215,51 @@ enum AlertStatus {
   ACKNOWLEDGED
   RESOLVED
   DISMISSED
+
+  @@map("alert_status")
 }
 
 model ResupplyRequest {
-  id            String   @id @default(cuid())
-  facilityId    String
-  facilityName  String
-  districtName  String
-  generatedAt   DateTime @default(now())
-  requestedById String
+  id            String   @id @default(uuid())
+  facilityId    String   @map("facility_id")
+  facilityName  String   @map("facility_name")
+  districtName  String   @map("district_name")
+  generatedAt   DateTime @default(now()) @map("generated_at")
+  requestedById String   @map("requested_by_id")
   status        String   @default("PENDING")
   items         Json
-  pdfUrl        String?
+  pdfUrl        String?  @map("pdf_url")
+
+  @@map("resupply_requests")
+  
 }
 
 model SmsLog {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
   recipient   String
   message     String
   status      String
-  alertId     String?
+  alertId     String?   @map("alert_id")
   provider    String    @default("AfricasTalking")
-  sentAt      DateTime  @default(now())
-  deliveredAt DateTime?
+  sentAt      DateTime  @default(now()) @map("sent_at")
+  deliveredAt DateTime? @map("delivered_at")
+
+  @@map("sms_logs")
+  
 }
 
 model AuditLog {
-  id        String   @id @default(cuid())
-  userId    String?
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
   action    String
   entity    String
-  entityId  String?
+  entityId  String?  @map("entity_id")
   before    Json?
   after     Json?
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+  
 }

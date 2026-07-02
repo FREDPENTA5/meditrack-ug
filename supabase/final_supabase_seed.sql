@@ -59,9 +59,9 @@ INSERT INTO public.facilities VALUES ('afdaedaf-3835-4f10-8f0d-4376b4d8b95e', 'W
 INSERT INTO public.facilities VALUES ('d4046f21-6e86-4cc2-b440-08922d557723', 'Entebbe General Hospital', 'WAK-ENT-005', 'GENERAL_HOSPITAL', 'ace73107-bf59-4f8d-9e91-af3e3f35a48e', 0.0512, 32.4634, 'Entebbe General Hospital, Wakiso District', NULL, '2026-06-09 12:29:31.335', '2026-06-09 12:29:31.335', true);
 
 -- Table: users
-INSERT INTO public.users VALUES ('6aa768bc-5b03-4bd9-8f20-a8aae338a24d', 'admin@nms.ug', 'Grace Achieng', '+256700000030', 'NMS_ADMIN', NULL, NULL, '2026-06-09 11:53:41.082', '2026-06-09 12:34:47.148', true, NULL);
-INSERT INTO public.users VALUES ('31f846bd-8548-4cdf-877a-3247703c49ef', 'dho@wakiso.ug', 'James Okello', '+256700000020', 'DISTRICT_OFFICER', NULL, 'ace73107-bf59-4f8d-9e91-af3e3f35a48e', '2026-06-09 11:53:41.079', '2026-06-09 12:36:28.3', true, '2026-06-09 12:36:28.291');
-INSERT INTO public.users VALUES ('9e89324e-9f5a-45a3-a212-edd7d72adbdf', 'pharmacist@gayaza.ug', 'Sarah Nakato', '+256700000010', 'FACILITY_WORKER', '4237a330-8d82-4e05-ac23-6fa09e0a12ca', NULL, '2026-06-09 11:53:41.075', '2026-06-09 12:50:19.555', true, '2026-06-09 12:50:19.553');
+INSERT INTO public.users (id, email, full_name, phone, role, facility_id, district_id, created_at, updated_at, is_active, last_login_at) VALUES ('6aa768bc-5b03-4bd9-8f20-a8aae338a24d', 'admin@nms.ug', 'Grace Achieng', '+256700000030', 'NMS_ADMIN', NULL, NULL, '2026-06-09 11:53:41.082', '2026-06-09 12:34:47.148', true, NULL);
+INSERT INTO public.users (id, email, full_name, phone, role, facility_id, district_id, created_at, updated_at, is_active, last_login_at) VALUES ('31f846bd-8548-4cdf-877a-3247703c49ef', 'dho@wakiso.ug', 'James Okello', '+256700000020', 'DISTRICT_OFFICER', NULL, 'ace73107-bf59-4f8d-9e91-af3e3f35a48e', '2026-06-09 11:53:41.079', '2026-06-09 12:36:28.3', true, '2026-06-09 12:36:28.291');
+INSERT INTO public.users (id, email, full_name, phone, role, facility_id, district_id, created_at, updated_at, is_active, last_login_at) VALUES ('9e89324e-9f5a-45a3-a212-edd7d72adbdf', 'pharmacist@gayaza.ug', 'Sarah Nakato', '+256700000010', 'FACILITY_WORKER', '4237a330-8d82-4e05-ac23-6fa09e0a12ca', NULL, '2026-06-09 11:53:41.075', '2026-06-09 12:50:19.555', true, '2026-06-09 12:50:19.553');
 
 -- Table: thresholds
 INSERT INTO public.thresholds VALUES ('3b6acf12-594f-4c0c-be69-c9c508c4850b', NULL, 'bb3d1a88-c916-409c-b9d4-cc04c85655ad', 14, 7, 120);

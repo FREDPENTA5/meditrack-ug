@@ -67,6 +67,13 @@ export const alertRepository = {
     });
   },
 
+  markSmsDelivered(id: string) {
+    return prisma.alert.update({
+      where: { id },
+      data: { smsDelivered: true },
+    });
+  },
+
   countBySeverity(scope: { facilityId?: string; districtId?: string }) {
     return prisma.alert.groupBy({
       by: ['severity'],

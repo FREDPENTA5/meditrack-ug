@@ -90,6 +90,30 @@ export const stockService = {
         notes: entry.notes,
       });
 
+      // If critical, fetch the DB-generated alert and dispatch an SMS to the DHO
+      if (status === 'CRITICAL' || status === 'STOCKOUT') {
+        const { prisma } = require('../lib/prisma');
+        const alert = await prisma.alert.findFirst({
+          where: { facilityId: input.facilityId, drugId: entry.drugId, status: 'ACTIVE' },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        if (alert && !alert.smsDelivered) {
+          const dho = await prisma.user.findFirst({
+            where: { role: 'DISTRICT_OFFICER', districtId: facility.districtId },
+          });
+
+          if (dho && dho.phone) {
+            const { alertQueue } = require('../lib/queue');
+            await alertQueue.add('send-sms', {
+              alertId: alert.id,
+              phone: dho.phone,
+              message: `ALERT: ${alert.message}`,
+            });
+          }
+        }
+      }
+
       created.push(record);
     }
 
