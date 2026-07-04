@@ -42,6 +42,7 @@ export const AuthUserSchema = z.object({
   email: z.string().email(),
   fullName: z.string(),
   role: RoleSchema,
+  phone: z.string().nullable().optional(),
   facilityId: z.string().nullable(),
   districtId: z.string().nullable(),
 });

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, LogOut, Menu, PanelLeft, Settings, User } from 'lucide-react';
-import { SearchInput } from '@/components/molecules/SearchInput';
+import { Combobox } from '@/components/molecules/Combobox';
+import { GlobalSearch } from '@/components/organisms/GlobalSearch/GlobalSearch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -72,15 +73,17 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
           <PanelLeft className="h-5 w-5" />
         </Button>
 
-        <div className="hidden min-w-0 sm:block">
-          <Button variant="outline" size="sm" className="h-8 max-w-[220px] gap-1.5 font-medium">
-            <span className="truncate">{contextLabel}</span>
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
-          </Button>
+        <div className="hidden min-w-0 sm:block max-w-[240px] w-full">
+          <Combobox
+            options={[{ value: user.facilityId ?? '', label: contextLabel }]}
+            value={user.facilityId ?? ''}
+            onChange={() => {}}
+            className="h-9"
+          />
         </div>
 
-        <div className="hidden min-w-0 flex-1 md:block">
-          <SearchInput className="max-w-md" placeholder="Search drugs, facilities…" />
+        <div className="hidden min-w-0 flex-1 md:block max-w-md ml-4">
+          <GlobalSearch />
         </div>
 
         <div className="ml-auto flex items-center gap-1">
