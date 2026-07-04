@@ -122,7 +122,7 @@ export const authController = {
       }
 
       const { userService } = await import('../services/user.service');
-      const updated = await userService.updateProfile(req.user.sub, req.body);
+      const updated = await userService.updateProfile(req.user, req.body);
 
       return res.json({
         success: true,
@@ -130,7 +130,11 @@ export const authController = {
           id: updated.id,
           email: updated.email,
           fullName: updated.fullName,
-          role: updated.role,
+          role: updated.role as
+            | 'FACILITY_WORKER'
+            | 'DISTRICT_OFFICER'
+            | 'NMS_ADMIN'
+            | 'SUPER_ADMIN',
           facilityId: updated.facilityId,
           districtId: updated.districtId,
         },

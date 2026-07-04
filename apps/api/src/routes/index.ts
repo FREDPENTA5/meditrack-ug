@@ -7,11 +7,13 @@ import { dashboardRouter } from './dashboard.routes';
 import { alertRouter } from './alert.routes';
 import { userRouter } from './user.routes';
 import { reportRouter } from './report.routes';
+import { districtRouter } from './district.routes';
 
 export const apiRouter = Router();
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/facilities', facilityRouter);
+apiRouter.use('/districts', districtRouter);
 apiRouter.use('/drugs', drugRouter);
 apiRouter.use('/stock', stockRouter);
 apiRouter.use('/dashboard', dashboardRouter);

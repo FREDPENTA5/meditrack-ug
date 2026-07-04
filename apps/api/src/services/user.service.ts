@@ -72,17 +72,9 @@ export const userService = {
     });
   },
 
-  async updateProfile(userId: string, input: UpdateProfileInput) {
-    const updated = await userRepository.updateProfile(userId, input);
-    return {
-      id: updated.id,
-      email: updated.email,
-      fullName: updated.fullName,
-      phone: updated.phone,
-      role: updated.role,
-      facilityId: updated.facilityId,
-      districtId: updated.districtId,
-    };
+  async updateProfile(userToken: AccessTokenPayload, input: UpdateProfileInput) {
+    const updated = await userRepository.updateProfile(userToken.sub, input);
+    return mapUser(updated as any);
   },
 
   async setActive(actor: AccessTokenPayload, targetUserId: string, input: UpdateUserStatusInput) {

@@ -8,6 +8,7 @@ import { validateBody } from '../middleware/validate';
 export const userRouter = Router();
 
 userRouter.use(authenticate);
+userRouter.patch('/me/profile', userController.updateProfile);
 userRouter.get('/', authorize('NMS_ADMIN', 'SUPER_ADMIN'), userController.list);
 userRouter.post(
   '/',

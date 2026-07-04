@@ -33,4 +33,14 @@ export const userController = {
       return next(error);
     }
   },
+
+  async updateProfile(req: Request, res: Response<ApiResponse<unknown>>, next: NextFunction) {
+    try {
+      if (!req.user) throw new AppError('Authentication required', 401, 'UNAUTHORIZED');
+      const data = await userService.updateProfile(req.user, req.body);
+      return res.json({ success: true, data });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };

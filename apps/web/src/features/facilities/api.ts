@@ -1,4 +1,5 @@
-import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
+import type { ApiResponse } from '@meditrack/shared';
 import type { StockRow } from '@/features/stock/api';
 import { fetchFacilityStock as fetchStockFromStockApi } from '@/features/stock/api';
 
@@ -21,54 +22,19 @@ export interface FacilityDetail extends FacilityListItem {
 }
 
 export async function fetchFacilities(): Promise<FacilityListItem[]> {
-  const { data, error } = await supabase.from('facilities').select(`*, districts(name)`);
-
-  if (error) {
-    throw new Error(error.message || 'Failed to load facilities');
+  const res = await api.get<ApiResponse<FacilityListItem[]>>('/facilities');
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Failed to load facilities');
   }
-
-  return (data || []).map((f: any) => ({
-    id: f.id,
-    name: f.name,
-    code: f.code,
-    level: f.level,
-    districtId: f.district_id,
-    districtName: f.districts?.name || 'Unknown',
-    latitude: f.latitude,
-    longitude: f.longitude,
-    address: f.address,
-    contactPhone: f.contact_phone,
-    isActive: f.is_active,
-  }));
+  return res.data.data;
 }
 
 export async function fetchFacility(id: string): Promise<FacilityDetail> {
-  const { data, error } = await supabase
-    .from('facilities')
-    .select(`*, districts(name)`)
-    .eq('id', id)
-    .single();
-
-  if (error || !data) {
-    throw new Error(error?.message || 'Facility not found');
+  const res = await api.get<ApiResponse<FacilityDetail>>(`/facilities/${id}`);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Facility not found');
   }
-
-  // To fetch workers we would join users table, but users references auth.users
-  // For now we will return an empty array for workers since we don't have user seed data yet
-  return {
-    id: data.id,
-    name: data.name,
-    code: data.code,
-    level: data.level,
-    districtId: data.district_id,
-    districtName: data.districts?.name || 'Unknown',
-    latitude: data.latitude,
-    longitude: data.longitude,
-    address: data.address,
-    contactPhone: data.contact_phone,
-    isActive: data.is_active,
-    workers: [],
-  };
+  return res.data.data;
 }
 
 export async function fetchFacilityStock(id: string): Promise<StockRow[]> {
@@ -81,9 +47,11 @@ export interface DistrictOption {
 }
 
 export async function fetchDistricts(): Promise<DistrictOption[]> {
-  const { data, error } = await supabase.from('districts').select('id, name').order('name');
-  if (error) throw new Error(error.message);
-  return (data ?? []).map((d: any) => ({ id: d.id, name: d.name }));
+  const res = await api.get<ApiResponse<DistrictOption[]>>('/districts');
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Failed to load districts');
+  }
+  return res.data.data;
 }
 
 export interface CreateFacilityInput {
@@ -98,45 +66,16 @@ export interface CreateFacilityInput {
 }
 
 export async function createFacility(input: CreateFacilityInput): Promise<FacilityListItem> {
-  const { data, error } = await supabase
-    .from('facilities')
-    .insert({
-      name: input.name,
-      code: input.code,
-      level: input.level,
-      district_id: input.districtId,
-      latitude: input.latitude,
-      longitude: input.longitude,
-      address: input.address || null,
-      contact_phone: input.contactPhone || null,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-    .select('*, districts(name)')
-    .single();
-
-  if (error || !data) throw new Error(error?.message ?? 'Failed to create facility');
-
-  return {
-    id: data.id,
-    name: data.name,
-    code: data.code,
-    level: data.level,
-    districtId: data.district_id,
-    districtName: (data as any).districts?.name ?? 'Unknown',
-    latitude: data.latitude,
-    longitude: data.longitude,
-    address: data.address,
-    contactPhone: data.contact_phone,
-    isActive: data.is_active,
-  };
+  const res = await api.post<ApiResponse<FacilityListItem>>('/facilities', input);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Failed to create facility');
+  }
+  return res.data.data;
 }
 
 export async function setFacilityActive(id: string, isActive: boolean): Promise<void> {
-  const { error } = await supabase
-    .from('facilities')
-    .update({ is_active: isActive, updated_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) throw new Error(error.message);
+  const res = await api.patch<ApiResponse<void>>(`/facilities/${id}/status`, { isActive });
+  if (!res.data.success) {
+    throw new Error(res.data.error?.message ?? 'Failed to update facility status');
+  }
 }

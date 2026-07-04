@@ -1,4 +1,5 @@
-import type { AuthUser, UpdateProfileInput } from '@meditrack/shared';
+import type { AuthUser, UpdateProfileInput, ApiResponse } from '@meditrack/shared';
+import { api } from '@/lib/api';
 import { fetchAuthProfile } from '@/lib/authUser';
 import { supabase } from '@/lib/supabase';
 
@@ -12,17 +13,10 @@ export async function updateProfile(input: UpdateProfileInput): Promise<AuthUser
     throw new Error('Not authenticated');
   }
 
-  const { error } = await supabase
-    .from('users')
-    .update({
-      full_name: input.fullName,
-      phone: input.phone ?? null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', user.id);
+  const res = await api.patch<ApiResponse<AuthUser>>('/users/me/profile', input);
 
-  if (error) {
-    throw new Error(error.message || 'Failed to update profile');
+  if (!res.data.success) {
+    throw new Error(res.data.error?.message ?? 'Failed to update profile');
   }
 
   return fetchAuthProfile(user.id);

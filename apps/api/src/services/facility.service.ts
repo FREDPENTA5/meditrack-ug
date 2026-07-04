@@ -3,6 +3,7 @@ import { AppError } from '../utils/AppError';
 import { getFacilityScope, assertFacilityAccess } from '../utils/scope';
 import { facilityRepository } from '../repositories/facility.repository';
 import { stockService } from './stock.service';
+import { prisma } from '../lib/prisma';
 
 export const facilityService = {
   async list(user: AccessTokenPayload) {
@@ -68,5 +69,40 @@ export const facilityService = {
     assertFacilityAccess(user, facility.id, facility.districtId);
 
     return stockService.getLatestForFacility(facilityId);
+  },
+
+  async create(user: AccessTokenPayload, data: any) {
+    if (user.role !== 'NMS_ADMIN' && user.role !== 'SUPER_ADMIN') {
+      throw new AppError('Forbidden', 403, 'FORBIDDEN');
+    }
+    const facility = await prisma.facility.create({
+      data: {
+        name: data.name,
+        code: data.code,
+        level: data.level,
+        districtId: data.districtId,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        address: data.address,
+        contactPhone: data.contactPhone,
+        isActive: true,
+      },
+      include: { district: true },
+    });
+    return {
+      ...facility,
+      districtName: facility.district.name,
+    };
+  },
+
+  async setActive(user: AccessTokenPayload, id: string, isActive: boolean) {
+    if (user.role !== 'NMS_ADMIN' && user.role !== 'SUPER_ADMIN') {
+      throw new AppError('Forbidden', 403, 'FORBIDDEN');
+    }
+    await prisma.facility.update({
+      where: { id },
+      data: { isActive },
+    });
+    return { success: true };
   },
 };
