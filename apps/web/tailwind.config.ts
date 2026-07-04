@@ -101,8 +101,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ['Sora', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {
@@ -144,11 +144,12 @@ const config: Config = {
         success: 'var(--shadow-success)',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: 'var(--radius-lg)',
+        md: 'var(--radius-md)',
+        sm: 'var(--radius-sm)',
         xl: 'var(--radius-xl)',
         '2xl': 'var(--radius-2xl)',
+        '3xl': 'var(--radius-3xl)',
         full: 'var(--radius-full)',
       },
       transitionDuration: {

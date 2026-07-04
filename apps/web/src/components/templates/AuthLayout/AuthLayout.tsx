@@ -3,76 +3,57 @@ import { Activity, ArrowLeft } from 'lucide-react';
 
 export function AuthLayout() {
   return (
-    <div className="flex min-h-screen bg-surface-page">
-      <aside className="relative hidden w-[48%] overflow-hidden bg-primary-950 lg:flex lg:flex-col">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 20% 80%, var(--color-primary-600) 0%, transparent 50%), radial-gradient(circle at 80% 20%, var(--color-primary-700) 0%, transparent 40%)',
-          }}
-          aria-hidden="true"
-        />
-        <div className="landing-grid absolute inset-0 opacity-20" aria-hidden="true" />
+    <div className="flex min-h-screen bg-neutral-50 font-body">
+      <aside className="relative hidden w-[45%] overflow-hidden bg-neutral-950 lg:flex lg:flex-col">
+        {/* Subtle noise/grid overlay instead of generic radial gradient */}
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
-        <div className="relative flex flex-1 flex-col justify-between p-10 xl:p-14">
+        <div className="relative flex flex-1 flex-col justify-between p-12 xl:p-16">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 shadow-lg ring-1 ring-white/10">
-              <Activity className="h-5 w-5 text-white" aria-hidden="true" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-primary-700 shadow-sm">
+              <Activity className="h-5 w-5 text-white" />
             </div>
-            <span className="font-heading text-xl font-bold text-white">MediTrack UG</span>
+            <span className="font-heading text-xl font-bold text-white tracking-tight">
+              MediTrack UG
+            </span>
           </div>
 
-          <div className="max-w-lg space-y-5">
-            <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight text-white xl:text-5xl">
-              Clinical confidence for every health facility
+          <div className="max-w-lg space-y-8">
+            <h1 className="font-heading text-4xl font-semibold leading-[1.15] tracking-tight text-white xl:text-5xl">
+              Precision logistics for Uganda's health network.
             </h1>
-            <p className="text-lg leading-relaxed text-primary-100">
-              Real-time drug stock alerts connecting Gayaza Hospital and Wakiso District — built for
-              clarity under pressure.
+            <p className="text-lg leading-relaxed text-neutral-400">
+              A unified platform connecting health facilities with district authorities for
+              real-time inventory visibility.
             </p>
-            <ul className="space-y-2 text-sm text-primary-200">
-              <li className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
-                Instant stock-out notifications
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
-                Works on low-end Android over 2G/3G
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
-                Role-based district &amp; facility views
-              </li>
-            </ul>
           </div>
 
-          <p className="text-xs text-primary-400">
-            © MediTrack UG · Uganda Ministry of Health aligned
+          <p className="text-sm font-medium text-neutral-500">
+            © {new Date().getFullYear()} MediTrack UG.
           </p>
         </div>
       </aside>
 
-      <main className="flex w-full flex-1 flex-col lg:w-[52%]">
-        <div className="flex items-center justify-between px-4 py-4 sm:px-8">
+      <main className="flex w-full flex-1 flex-col lg:w-[55%] relative">
+        <div className="absolute top-0 left-0 w-full flex items-center justify-between p-6 sm:p-8">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+            className="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Back to Home
           </Link>
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white">
-              <Activity className="h-4 w-4" aria-hidden="true" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-primary-700 text-white">
+              <Activity className="h-4 w-4" />
             </div>
-            <span className="font-heading text-base font-bold">MediTrack UG</span>
+            <span className="font-heading text-base font-bold text-neutral-900">MediTrack UG</span>
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-4 pb-12 sm:px-8">
-          <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-border-subtle bg-surface-card p-6 shadow-sm sm:p-8">
+        <div className="flex flex-1 items-center justify-center p-6">
+          <div className="w-full max-w-[420px]">
+            <div className="rounded-[24px] bg-white p-8 sm:p-10 shadow-xl shadow-neutral-200/50 border border-neutral-100">
               <Outlet />
             </div>
           </div>

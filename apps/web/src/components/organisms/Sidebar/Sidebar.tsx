@@ -44,21 +44,23 @@ function SidebarNav({
   const BrandIcon = BRAND.icon;
 
   return (
-    <div className="flex h-full flex-col bg-primary-950 text-primary-50">
+    <div className="flex h-full flex-col bg-white text-neutral-900 border-r border-neutral-100">
       <div
         className={cn(
-          'flex h-topbar shrink-0 items-center px-3',
+          'flex h-topbar shrink-0 items-center px-4',
           collapsed ? 'justify-center' : 'justify-between gap-2',
         )}
       >
-        <div className={cn('flex items-center gap-2.5', collapsed && 'justify-center')}>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <BrandIcon className="h-4 w-4" aria-hidden="true" />
+        <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-primary-700 text-white shadow-sm">
+            <BrandIcon className="h-5 w-5" />
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">{BRAND.name}</p>
-              <p className="truncate text-[10px] uppercase tracking-wider text-primary-300/80">
+              <p className="truncate text-[15px] font-heading font-bold text-neutral-900">
+                {BRAND.name}
+              </p>
+              <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 Uganda
               </p>
             </div>
@@ -68,18 +70,19 @@ function SidebarNav({
           <Button
             variant="ghost"
             size="icon"
-            className="text-primary-100 hover:bg-primary-900 hover:text-primary-50 lg:hidden"
+            className="text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 lg:hidden"
             onClick={onClose}
-            aria-label="Close menu"
           >
             <X className="h-5 w-5" />
           </Button>
         )}
       </div>
 
-      <Separator className="bg-primary-900" />
+      <div className="px-4 py-2">
+        <Separator className="bg-neutral-100" />
+      </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto p-2" aria-label="Main navigation">
+      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3" aria-label="Main navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -90,52 +93,56 @@ function SidebarNav({
               title={collapsed ? item.label : undefined}
               className={({ isActive }) =>
                 cn(
-                  'relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  'relative flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-sm font-medium transition-all duration-200',
                   isActive
-                    ? 'bg-primary-900 text-primary-50'
-                    : 'text-primary-200 hover:bg-primary-900/60 hover:text-primary-50',
+                    ? 'bg-primary-50 text-primary-700 font-semibold'
+                    : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900',
                   collapsed && 'justify-center px-2',
                 )
               }
             >
-              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <Icon className={cn('h-5 w-5 shrink-0', collapsed && 'h-6 w-6')} />
               {!collapsed && (
                 <>
                   <span className="flex-1 truncate">{item.label}</span>
                   {item.badge !== undefined && item.badge > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-medium text-destructive-foreground">
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-danger-500 px-1.5 text-[10px] font-bold text-white shadow-sm">
                       {item.badge > 9 ? '9+' : item.badge}
                     </span>
                   )}
                 </>
               )}
               {collapsed && item.badge !== undefined && item.badge > 0 && (
-                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />
+                <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-danger-500 shadow-sm border-2 border-white" />
               )}
             </NavLink>
           );
         })}
       </nav>
 
-      <Separator className="bg-primary-900" />
+      <div className="px-4 py-2">
+        <Separator className="bg-neutral-100" />
+      </div>
 
-      <div className={cn('p-2', collapsed && 'flex justify-center')}>
+      <div className={cn('p-3', collapsed && 'flex justify-center')}>
         <NavLink
           to="/settings"
           className={cn(
-            'flex items-center gap-2.5 rounded-md p-2 transition-colors hover:bg-primary-900/60',
+            'flex items-center gap-3 rounded-[12px] p-2 transition-all hover:bg-neutral-100',
             collapsed && 'p-1.5',
           )}
         >
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-primary-800 text-xs text-primary-50">
+          <Avatar className="h-9 w-9 shadow-sm border border-neutral-100">
+            <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
               {getInitials(user.fullName)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{user.fullName}</p>
-              <p className="truncate text-xs text-primary-300">{formatRole(user.role)}</p>
+              <p className="truncate text-[13px] font-bold text-neutral-900">{user.fullName}</p>
+              <p className="truncate text-[11px] font-medium text-neutral-500">
+                {formatRole(user.role)}
+              </p>
             </div>
           )}
         </NavLink>
