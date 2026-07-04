@@ -1,7 +1,10 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, ArrowLeft } from 'lucide-react';
 
 export function AuthLayout() {
+  const location = useLocation();
+
   return (
     <div className="flex min-h-screen bg-neutral-50 font-body">
       <aside className="relative hidden w-[45%] overflow-hidden bg-neutral-950 lg:flex lg:flex-col">
@@ -54,7 +57,17 @@ export function AuthLayout() {
         <div className="flex flex-1 items-center justify-center p-6">
           <div className="w-full max-w-[420px]">
             <div className="rounded-[24px] bg-white p-8 sm:p-10 shadow-xl shadow-neutral-200/50 border border-neutral-100">
-              <Outlet />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={location.pathname}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                >
+                  <Outlet />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>

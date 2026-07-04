@@ -1,4 +1,5 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sidebar } from '../../organisms/Sidebar';
 import { TopBar } from '../../organisms/TopBar';
 import { useDashboardSummary } from '../../../features/dashboard/hooks/useDashboard';
@@ -6,6 +7,7 @@ import { useDashboardSummary } from '../../../features/dashboard/hooks/useDashbo
 export function DashboardLayout() {
   const { data: summary } = useDashboardSummary();
   const alertCount = summary?.unresolvedAlerts ?? 0;
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -18,7 +20,17 @@ export function DashboardLayout() {
           <TopBar alertCount={alertCount} />
           <main className="flex-1 bg-muted/30 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             <div className="mx-auto max-w-content">
-              <Outlet />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={location.pathname}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                >
+                  <Outlet />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </main>
         </div>

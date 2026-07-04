@@ -25,11 +25,11 @@ export default function SettingsPage() {
     formState: { errors },
   } = useForm<UpdateProfileInput>({
     resolver: zodResolver(UpdateProfileSchema),
-    defaultValues: { fullName: user?.fullName ?? '', phone: '' },
+    defaultValues: { fullName: user?.fullName ?? '', phone: user?.phone ?? '' },
   });
 
   useEffect(() => {
-    if (user) reset({ fullName: user.fullName, phone: '' });
+    if (user) reset({ fullName: user.fullName, phone: user.phone ?? '' });
   }, [user, reset]);
 
   const save = useMutation({
