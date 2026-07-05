@@ -142,6 +142,13 @@ export default function UsersPage() {
           <CardContent className="p-0">
             {users.isLoading ? (
               <Skeleton className="m-4 h-40 w-full" />
+            ) : users.isError ? (
+              <div className="p-6">
+                <EmptyState
+                  title="Failed to load users"
+                  description={(users.error as Error)?.message ?? 'An unknown error occurred'}
+                />
+              </div>
             ) : !users.data?.length ? (
               <div className="p-6">
                 <EmptyState title="No users found" />
