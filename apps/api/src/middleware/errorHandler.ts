@@ -10,11 +10,12 @@ export function errorHandler(
   _next: NextFunction,
 ) {
   if (err instanceof AppError || err.name === 'AppError') {
-    return res.status(err.statusCode).json({
+    const appErr = err as AppError;
+    return res.status(appErr.statusCode).json({
       success: false,
       error: {
-        code: err.code,
-        message: err.message,
+        code: appErr.code,
+        message: appErr.message,
       },
     });
   }
@@ -25,8 +26,7 @@ export function errorHandler(
     success: false,
     error: {
       code: 'INTERNAL_SERVER_ERROR',
-      message: err.message,
-      stack: err.stack,
+      message: err.message || 'An unexpected error occurred',
     },
   });
 }
