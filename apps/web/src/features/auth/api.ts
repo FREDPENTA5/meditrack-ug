@@ -1,36 +1,15 @@
 import type { AuthUser, LoginInput, RegisterInput, LoginResponse } from '@meditrack/shared';
 import type { ApiResponse } from '@meditrack/shared';
-import { fetchAuthProfile } from '../../lib/authUser';
-import { supabase } from '../../lib/supabase';
 import { api } from '../../lib/api';
 
 export async function loginRequest(input: LoginInput): Promise<LoginResponse> {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: input.email,
-    password: input.password,
-  });
+  const res = await api.post<ApiResponse<LoginResponse>>('/auth/login', input);
 
-  if (error) {
-    throw new Error(
-      error.message === 'Invalid login credentials' ? 'Invalid email or password' : error.message,
-    );
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Login failed');
   }
 
-  if (!data.session || !data.user) {
-    throw new Error('Login failed');
-  }
-
-  const user = await fetchAuthProfile(data.user.id);
-
-  await supabase
-    .from('users')
-    .update({ last_login_at: new Date().toISOString() })
-    .eq('id', data.user.id);
-
-  return {
-    user,
-    accessToken: data.session.access_token,
-  };
+  return res.data.data;
 }
 
 export async function registerRequest(
@@ -46,21 +25,16 @@ export async function registerRequest(
 }
 
 export async function logoutRequest(): Promise<void> {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    throw new Error(error.message);
+  const res = await api.post<ApiResponse<null>>('/auth/logout');
+  if (!res.data.success) {
+    throw new Error(res.data.error?.message ?? 'Logout failed');
   }
 }
 
 export async function fetchCurrentUser(): Promise<AuthUser> {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    throw new Error('Not authenticated');
+  const res = await api.get<ApiResponse<AuthUser>>('/auth/me');
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Not authenticated');
   }
-
-  return fetchAuthProfile(user.id);
+  return res.data.data;
 }
