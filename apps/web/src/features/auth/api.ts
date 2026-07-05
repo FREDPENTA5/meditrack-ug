@@ -38,3 +38,11 @@ export async function fetchCurrentUser(): Promise<AuthUser> {
   }
   return res.data.data;
 }
+
+export async function refreshSessionRequest(): Promise<LoginResponse> {
+  const res = await api.post<ApiResponse<LoginResponse>>('/auth/refresh');
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Session expired');
+  }
+  return res.data.data;
+}

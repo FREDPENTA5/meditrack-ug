@@ -20,7 +20,13 @@ export const authController = {
       const { user, accessToken, refreshToken } = await authService.login(req.body);
       const rememberMe = req.body.rememberMe ?? false;
 
-      setRefreshTokenCookie(res, refreshToken, getRefreshExpiry(rememberMe));
+      // Set secure cookie for cross-origin (Render to Vercel)
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: true, // MUST be true for SameSite=None
+        sameSite: 'none', // MUST be none for cross-origin requests
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
 
       return res.json({
         success: true,

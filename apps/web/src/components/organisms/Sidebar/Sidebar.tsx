@@ -159,33 +159,33 @@ export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
     return (
       <AnimatePresence>
         {sidebarOpen && (
-          <React.Fragment key="mobile-sidebar-container">
-            <motion.button
-              key="sidebar-overlay"
-              type="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-              aria-label="Close navigation"
+          <motion.button
+            key="sidebar-overlay"
+            type="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close navigation"
+          />
+        )}
+        {sidebarOpen && (
+          <motion.aside
+            key="sidebar-aside"
+            initial={{ x: -280 }}
+            animate={{ x: 0 }}
+            exit={{ x: -280 }}
+            transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
+            className="fixed inset-y-0 left-0 z-50 w-sidebar shadow-xl lg:hidden"
+          >
+            <SidebarNav
+              collapsed={false}
+              alertCount={alertCount}
+              onNavigate={() => setSidebarOpen(false)}
+              onClose={() => setSidebarOpen(false)}
             />
-            <motion.aside
-              key="sidebar-aside"
-              initial={{ x: -280 }}
-              animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed inset-y-0 left-0 z-50 w-sidebar shadow-xl lg:hidden"
-            >
-              <SidebarNav
-                collapsed={false}
-                alertCount={alertCount}
-                onNavigate={() => setSidebarOpen(false)}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </motion.aside>
-          </React.Fragment>
+          </motion.aside>
         )}
       </AnimatePresence>
     );

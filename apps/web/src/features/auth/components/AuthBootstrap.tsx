@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Spinner } from '../../../components/atoms/Spinner';
-import { fetchAuthProfile } from '../../../lib/authUser';
-import { supabase } from '../../../lib/supabase';
+import { refreshSessionRequest } from '../api';
 import { useAuthStore } from '../../../stores/authStore';
 
 interface AuthBootstrapProps {
@@ -19,18 +18,8 @@ export function AuthBootstrap({ children }: AuthBootstrapProps) {
 
     async function restoreSession() {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (!active) return;
-
-        if (session?.user) {
-          const profile = await fetchAuthProfile(session.user.id);
-          setAuth(profile, session.access_token);
-        } else {
-          clearAuth();
-        }
+        const { user, accessToken } = await refreshSessionRequest();
+        if (active) setAuth(user, accessToken);
       } catch {
         if (active) clearAuth();
       } finally {
@@ -40,29 +29,8 @@ export function AuthBootstrap({ children }: AuthBootstrapProps) {
 
     restoreSession();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!active) return;
-
-      if (event === 'SIGNED_OUT' || !session?.user) {
-        clearAuth();
-        return;
-      }
-
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-        try {
-          const profile = await fetchAuthProfile(session.user.id);
-          setAuth(profile, session.access_token);
-        } catch {
-          clearAuth();
-        }
-      }
-    });
-
     return () => {
       active = false;
-      subscription.unsubscribe();
     };
   }, [setAuth, clearAuth, setBootstrapped]);
 
