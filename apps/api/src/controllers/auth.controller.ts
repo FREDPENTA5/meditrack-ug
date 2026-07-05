@@ -98,6 +98,7 @@ export const authController = {
           id: sub,
           email,
           fullName: user.fullName,
+          phone: user.phone,
           role,
           facilityId,
           districtId,
@@ -130,6 +131,7 @@ export const authController = {
           id: updated.id,
           email: updated.email,
           fullName: updated.fullName,
+          phone: updated.phone,
           role: updated.role as
             | 'FACILITY_WORKER'
             | 'DISTRICT_OFFICER'
