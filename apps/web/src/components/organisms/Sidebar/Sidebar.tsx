@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -158,8 +159,9 @@ export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
     return (
       <AnimatePresence>
         {sidebarOpen && (
-          <>
+          <React.Fragment key="mobile-sidebar-container">
             <motion.button
+              key="sidebar-overlay"
               type="button"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -169,6 +171,7 @@ export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
               aria-label="Close navigation"
             />
             <motion.aside
+              key="sidebar-aside"
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}
@@ -182,7 +185,7 @@ export function Sidebar({ alertCount = 0, variant = 'desktop' }: SidebarProps) {
                 onClose={() => setSidebarOpen(false)}
               />
             </motion.aside>
-          </>
+          </React.Fragment>
         )}
       </AnimatePresence>
     );
