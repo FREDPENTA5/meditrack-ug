@@ -103,11 +103,12 @@ export const stockService = {
             where: { role: 'DISTRICT_OFFICER', districtId: facility.districtId },
           });
 
-          if (dho && dho.phone) {
+          if (dho && (dho.phone || dho.email)) {
             const { alertQueue } = require('../lib/queue');
-            await alertQueue.add('send-sms', {
+            await alertQueue.add('send-alert', {
               alertId: alert.id,
               phone: dho.phone,
+              email: dho.email,
               message: `ALERT: ${alert.message}`,
             });
           }
