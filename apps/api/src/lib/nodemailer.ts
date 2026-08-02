@@ -51,7 +51,7 @@ export async function sendEmailAlert(to: string, subject: string, html: string):
     const transporter = await getTransporter();
 
     const info = await transporter.sendMail({
-      from: '"MediTrack Alerts" <alerts@meditrack.ug>',
+      from: `"MediTrack Alerts" <${env.SMTP_USER || 'alerts@meditrack.ug'}>`,
       to,
       subject,
       html,
