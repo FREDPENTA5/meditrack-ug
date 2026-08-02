@@ -2,10 +2,15 @@ import nodemailer from 'nodemailer';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
 
-// Create a reusable transporter object using the default SMTP transport
+let transporterInstance: nodemailer.Transporter | null = null;
+
 export async function getTransporter() {
+  if (transporterInstance) {
+    return transporterInstance;
+  }
+
   if (env.SMTP_USER && env.SMTP_PASS) {
-    return nodemailer.createTransport({
+    transporterInstance = nodemailer.createTransport({
       host: env.SMTP_HOST,
       port: Number(env.SMTP_PORT),
       secure: Number(env.SMTP_PORT) === 465, // true for 465, false for other ports
@@ -13,14 +18,16 @@ export async function getTransporter() {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
       },
+      pool: true, // Enable connection pooling
     });
+    return transporterInstance;
   }
 
   // Fallback to Ethereal Email for testing if no credentials are provided
   logger.info('No SMTP credentials found. Generating Ethereal test account...');
   const testAccount = await nodemailer.createTestAccount();
 
-  return nodemailer.createTransport({
+  transporterInstance = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     secure: false,
@@ -28,7 +35,9 @@ export async function getTransporter() {
       user: testAccount.user,
       pass: testAccount.pass,
     },
+    pool: true,
   });
+  return transporterInstance;
 }
 
 export async function sendEmailAlert(to: string, subject: string, html: string): Promise<boolean> {
