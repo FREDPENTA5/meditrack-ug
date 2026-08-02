@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { env } from '../config/env';
 
 let transporterInstance: nodemailer.Transporter | null = null;
+let testAccountPromise: Promise<nodemailer.Transporter> | null = null;
 
 export async function getTransporter() {
   if (transporterInstance) {
@@ -10,6 +11,7 @@ export async function getTransporter() {
   }
 
   if (env.SMTP_USER && env.SMTP_PASS) {
+    // Synchronously assign to prevent race conditions during concurrent worker execution
     transporterInstance = nodemailer.createTransport({
       host: env.SMTP_HOST,
       port: Number(env.SMTP_PORT),
@@ -18,26 +20,30 @@ export async function getTransporter() {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
       },
-      pool: true, // Enable connection pooling
+      pool: true,
     });
     return transporterInstance;
   }
 
-  // Fallback to Ethereal Email for testing if no credentials are provided
-  logger.info('No SMTP credentials found. Generating Ethereal test account...');
-  const testAccount = await nodemailer.createTestAccount();
-
-  transporterInstance = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-    pool: true,
-  });
-  return transporterInstance;
+  if (!testAccountPromise) {
+    testAccountPromise = (async () => {
+      logger.info('No SMTP credentials found. Generating Ethereal test account...');
+      const testAccount = await nodemailer.createTestAccount();
+      const t = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+        pool: true,
+      });
+      transporterInstance = t;
+      return t;
+    })();
+  }
+  return testAccountPromise;
 }
 
 export async function sendEmailAlert(to: string, subject: string, html: string): Promise<boolean> {
