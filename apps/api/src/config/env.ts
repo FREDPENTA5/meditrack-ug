@@ -10,10 +10,12 @@ const envSchema = z.object({
   AT_API_KEY: z.string().default(''),
   AT_USERNAME: z.string().default('sandbox'),
   AT_SHORTCODE: z.string(),
-  SMTP_HOST: z.string(),
-  SMTP_PORT: z.string(),
-  SMTP_USER: z.string(),
-  SMTP_PASS: z.string(),
+  RESEND_API_KEY: z.string().default(''),
+  RESEND_FROM: z.string().default('MediTrack Alerts <onboarding@resend.dev>'),
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.string().default('587'),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASS: z.string().default(''),
   FRONTEND_URL: z.string().url(),
 });
 
