@@ -14,8 +14,8 @@ export async function getTransporter() {
     // Synchronously assign to prevent race conditions during concurrent worker execution
     transporterInstance = nodemailer.createTransport({
       host: env.SMTP_HOST,
-      port: Number(env.SMTP_PORT),
-      secure: Number(env.SMTP_PORT) === 465, // true for 465, false for other ports
+      port: 465,
+      secure: true,
       auth: {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
