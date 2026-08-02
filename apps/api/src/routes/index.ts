@@ -15,9 +15,14 @@ export const apiRouter = Router();
 
 apiRouter.get('/debug/email', async (req, res) => {
   const provider = getEmailProvider();
-  const fallbackTo = 'fredmeghanpenta@gmail.com';
-  const rawTo = typeof req.query.to === 'string' ? req.query.to.trim() : '';
-  const to = rawTo || fallbackTo;
+  let to: string;
+  if (provider === 'resend') {
+    to = env.RESEND_TEST_TO;
+  } else {
+    const fallbackTo = env.RESEND_TEST_TO;
+    const rawTo = typeof req.query.to === 'string' ? req.query.to.trim() : '';
+    to = rawTo || fallbackTo;
+  }
 
   try {
     if (provider === 'smtp') {

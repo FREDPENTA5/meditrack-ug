@@ -35,12 +35,12 @@ describe('GET /debug/email', () => {
     const response = await request(app).get('/api/debug/email?to=alerts@example.com');
 
     expect(sendEmailAlertMock).toHaveBeenCalledWith(
-      'alerts@example.com',
+      'fredmeghanpenta@gmail.com',
       'Debug Test',
       'Testing from API',
     );
     expect(response.status).toBe(200);
-    expect(response.body.to).toBe('alerts@example.com');
+    expect(response.body.to).toBe('fredmeghanpenta@gmail.com');
   });
 
   it('falls back to the default recipient when the query parameter is blank', async () => {
