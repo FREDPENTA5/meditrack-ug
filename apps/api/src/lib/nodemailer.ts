@@ -20,7 +20,6 @@ export async function getTransporter() {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
       },
-      pool: true,
     });
     return transporterInstance;
   }
@@ -37,7 +36,6 @@ export async function getTransporter() {
           user: testAccount.user,
           pass: testAccount.pass,
         },
-        pool: true,
       });
       transporterInstance = t;
       return t;

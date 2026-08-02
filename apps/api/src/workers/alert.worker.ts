@@ -49,7 +49,7 @@ export const alertWorker = new Worker<AlertJobData>(
   },
   {
     connection: redis as any,
-    concurrency: 5,
+    concurrency: 1,
   },
 );
 
