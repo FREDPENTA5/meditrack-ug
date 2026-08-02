@@ -7,8 +7,8 @@ export async function getTransporter() {
   if (env.SMTP_USER && env.SMTP_PASS) {
     return nodemailer.createTransport({
       host: env.SMTP_HOST,
-      port: env.SMTP_PORT,
-      secure: env.SMTP_PORT === 465, // true for 465, false for other ports
+      port: Number(env.SMTP_PORT),
+      secure: Number(env.SMTP_PORT) === 465, // true for 465, false for other ports
       auth: {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
@@ -45,7 +45,7 @@ export async function sendEmailAlert(to: string, subject: string, html: string):
     logger.info(`Email sent to ${to}: ${info.messageId}`);
 
     // Preview only available when sending through an Ethereal account
-    const previewUrl = nodemailer.getTestMessageUrl(info);
+    const previewUrl = nodemailer.getTestMessageUrl(info as any);
     if (previewUrl) {
       logger.info(`Preview URL: ${previewUrl}`);
     }
