@@ -63,8 +63,18 @@ export type { DashboardSummary, FacilityMapCollection } from './schemas/dashboar
 export { PaginationQuerySchema, DrugListQuerySchema, AlertListQuerySchema } from './schemas/query';
 export type { PaginationQuery, DrugListQuery, AlertListQuery } from './schemas/query';
 
-export { UpdateProfileSchema, UpdateUserStatusSchema, UserListItemSchema } from './schemas/user';
-export type { UpdateProfileInput, UpdateUserStatusInput, UserListItem } from './schemas/user';
+export {
+  UpdateProfileSchema,
+  UpdateUserStatusSchema,
+  UpdateUserSchema,
+  UserListItemSchema,
+} from './schemas/user';
+export type {
+  UpdateProfileInput,
+  UpdateUserStatusInput,
+  UpdateUserInput,
+  UserListItem,
+} from './schemas/user';
 
 export { ReportSummarySchema } from './schemas/report';
 export type { ReportSummary } from './schemas/report';
