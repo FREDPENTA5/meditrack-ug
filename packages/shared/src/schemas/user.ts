@@ -10,6 +10,13 @@ export const UpdateUserStatusSchema = z.object({
   isActive: z.boolean(),
 });
 
+export const UpdateUserSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  role: RoleSchema.optional().default('FACILITY_WORKER'),
+  facilityId: z.string().optional().nullable(),
+  districtId: z.string().optional().nullable(),
+});
+
 export const UserListItemSchema = z.object({
   id: z.string(),
   email: z.string().email(),
@@ -27,4 +34,5 @@ export const UserListItemSchema = z.object({
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
 export type UpdateUserStatusInput = z.infer<typeof UpdateUserStatusSchema>;
+export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 export type UserListItem = z.infer<typeof UserListItemSchema>;

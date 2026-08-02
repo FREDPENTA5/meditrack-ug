@@ -22,36 +22,91 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatRole } from '@/lib/navigation';
-import { useSetUserActive, useUsers, useCreateUser } from '@/features/users/hooks/useUsers';
+import {
+  useSetUserActive,
+  useUsers,
+  useCreateUser,
+  useUpdateUser,
+} from '@/features/users/hooks/useUsers';
+import { useFacilities, useDistricts } from '@/features/facilities/hooks/useFacilities';
+import type { UserListItem } from '@meditrack/shared';
 
 export default function UsersPage() {
   const users = useUsers();
+  const facilities = useFacilities();
+  const districts = useDistricts();
   const setActive = useSetUserActive();
   const createUser = useCreateUser();
+  const updateUser = useUpdateUser();
   const [isCreating, setIsCreating] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserListItem | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { role: 'FACILITY_WORKER' },
   });
 
+  const selectedRole = watch('role');
+
   const onSubmit = (data: RegisterInput) => {
     setSuccessMsg('');
-    createUser.mutate(data, {
-      onSuccess: (created) => {
-        setSuccessMsg(
-          `✓ User "${created.fullName}" created. They will receive a confirmation email to activate their account.`,
-        );
-        setIsCreating(false);
-        reset();
-      },
+    if (editingUser) {
+      updateUser.mutate(
+        {
+          id: editingUser.id,
+          input: {
+            ...data,
+            districtId: data.districtId || null,
+            facilityId: data.facilityId || null,
+          },
+        },
+        {
+          onSuccess: (updated) => {
+            setSuccessMsg(`✓ User "${updated.fullName}" updated successfully.`);
+            setEditingUser(null);
+            reset();
+          },
+        },
+      );
+    } else {
+      createUser.mutate(data, {
+        onSuccess: (created) => {
+          setSuccessMsg(
+            `✓ User "${created.fullName}" created. They will receive a confirmation email to activate their account.`,
+          );
+          setIsCreating(false);
+          reset();
+        },
+      });
+    }
+  };
+
+  const handleEdit = (user: UserListItem) => {
+    setEditingUser(user);
+    setIsCreating(false);
+    reset({
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      districtId: user.districtId ?? undefined,
+      facilityId: user.facilityId ?? undefined,
+      password: 'dummy_password_for_validation', // Dummy since it's required by RegisterSchema but ignored by backend on update
     });
+    setSuccessMsg('');
+  };
+
+  const handleCancel = () => {
+    setIsCreating(false);
+    setEditingUser(null);
+    reset({ role: 'FACILITY_WORKER' });
   };
 
   return (
@@ -62,11 +117,15 @@ export default function UsersPage() {
         action={
           <Button
             onClick={() => {
-              setIsCreating(!isCreating);
-              setSuccessMsg('');
+              if (isCreating || editingUser) {
+                handleCancel();
+              } else {
+                setIsCreating(true);
+                setSuccessMsg('');
+              }
             }}
           >
-            {isCreating ? 'Cancel' : 'Create User'}
+            {isCreating || editingUser ? 'Cancel' : 'Create User'}
           </Button>
         }
       />
@@ -77,8 +136,11 @@ export default function UsersPage() {
         </div>
       )}
 
-      {isCreating && (
-        <DashboardSection eyebrow="New" title="Create User">
+      {(isCreating || editingUser) && (
+        <DashboardSection
+          eyebrow={editingUser ? 'Edit' : 'New'}
+          title={editingUser ? 'Edit User' : 'Create User'}
+        >
           <Card className="shadow-sm">
             <CardContent className="p-6">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
@@ -91,18 +153,20 @@ export default function UsersPage() {
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" {...register('email')} />
+                  <Input id="email" type="email" {...register('email')} disabled={!!editingUser} />
                   {errors.email && (
                     <p className="text-sm text-destructive">{errors.email.message}</p>
                   )}
                 </div>
-                <div>
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" {...register('password')} />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password.message}</p>
-                  )}
-                </div>
+                {!editingUser && (
+                  <div>
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" type="password" {...register('password')} />
+                    {errors.password && (
+                      <p className="text-sm text-destructive">{errors.password.message}</p>
+                    )}
+                  </div>
+                )}
                 <div>
                   <Label htmlFor="role">Role</Label>
                   <select
@@ -117,6 +181,42 @@ export default function UsersPage() {
                   </select>
                   {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
                 </div>
+
+                {selectedRole === 'FACILITY_WORKER' && (
+                  <div>
+                    <Label htmlFor="facilityId">Assign to Facility</Label>
+                    <select
+                      id="facilityId"
+                      {...register('facilityId')}
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="">Select a facility...</option>
+                      {facilities.data?.map((f) => (
+                        <option key={f.id} value={f.id}>
+                          {f.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {selectedRole === 'DISTRICT_OFFICER' && (
+                  <div>
+                    <Label htmlFor="districtId">Assign to District</Label>
+                    <select
+                      id="districtId"
+                      {...register('districtId')}
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="">Select a district...</option>
+                      {districts.data?.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 {createUser.isError && (
                   <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                     {(createUser.error as Error)?.message ??
@@ -124,10 +224,10 @@ export default function UsersPage() {
                   </div>
                 )}
                 <div className="flex gap-2 pt-2">
-                  <Button type="submit" loading={createUser.isPending}>
-                    Save User
+                  <Button type="submit" loading={createUser.isPending || updateUser.isPending}>
+                    {editingUser ? 'Save Changes' : 'Save User'}
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => setIsCreating(false)}>
+                  <Button type="button" variant="outline" onClick={handleCancel}>
                     Cancel
                   </Button>
                 </div>
@@ -184,14 +284,19 @@ export default function UsersPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          loading={setActive.isPending && setActive.variables?.id === u.id}
-                          onClick={() => setActive.mutate({ id: u.id, isActive: !u.isActive })}
-                        >
-                          {u.isActive ? 'Disable' : 'Enable'}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(u)}>
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            loading={setActive.isPending && setActive.variables?.id === u.id}
+                            onClick={() => setActive.mutate({ id: u.id, isActive: !u.isActive })}
+                          >
+                            {u.isActive ? 'Disable' : 'Enable'}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -3,7 +3,7 @@ import { StatTile } from '@/components/molecules/StatTile';
 import { PageHeader } from '@/components/molecules/PageHeader';
 import { DashboardSection } from '@/components/molecules/DashboardSection';
 import { KpiGrid } from '@/components/molecules/KpiGrid';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FacilityMap } from '@/components/organisms/FacilityMap';
 import { AlertFeed } from '@/components/organisms/AlertFeed';
@@ -39,13 +39,10 @@ export default function DashboardPage() {
     const { data } = summary;
 
     return (
-      <div className="space-y-8">
-        <PageHeader title="My Facility" description="Gayaza Hospital — live stock overview" />
-
+      <div className="space-y-6">
         <DashboardSection
-          eyebrow="Overview"
           title="Stock status"
-          description="Counts across your facility formulary"
+          description="Live counts across your facility formulary"
         >
           {summary.isLoading ? (
             <KpiSkeleton count={3} />
@@ -76,15 +73,10 @@ export default function DashboardPage() {
         </DashboardSection>
 
         <DashboardSection
-          eyebrow="Activity"
           title="Recent alerts"
-          description="Stock events that need attention"
+          description="Select an alert to view details and take action"
         >
           <Card className="shadow-sm">
-            <CardHeader className="border-b border-border/60 pb-4">
-              <CardTitle className="text-base font-medium">Latest</CardTitle>
-              <CardDescription>Tap an alert for full details</CardDescription>
-            </CardHeader>
             <CardContent className="p-0">
               <AlertFeed alerts={alerts.data} isLoading={alerts.isLoading} embedded />
             </CardContent>

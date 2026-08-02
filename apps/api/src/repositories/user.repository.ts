@@ -47,6 +47,30 @@ export const userRepository = {
     });
   },
 
+  updateUser(
+    id: string,
+    data: {
+      fullName: string;
+      role: string;
+      facilityId?: string | null;
+      districtId?: string | null;
+    },
+  ) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        fullName: data.fullName,
+        role: data.role as import('@prisma/client').Role,
+        facilityId: data.facilityId,
+        districtId: data.districtId,
+      },
+      include: {
+        facility: { select: { name: true } },
+        district: { select: { name: true } },
+      },
+    });
+  },
+
   create(data: {
     email: string;
     passwordHash: string;

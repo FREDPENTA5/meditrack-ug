@@ -22,3 +22,9 @@ userRouter.patch(
   validateBody(UpdateUserStatusSchema),
   userController.setActive,
 );
+userRouter.patch(
+  '/:id',
+  authorize('NMS_ADMIN', 'SUPER_ADMIN'),
+  validateBody(require('@meditrack/shared').UpdateUserSchema),
+  userController.update,
+);

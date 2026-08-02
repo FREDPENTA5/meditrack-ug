@@ -86,6 +86,22 @@ export const userService = {
     if (!target) throw new AppError('User not found', 404, 'NOT_FOUND');
 
     const updated = await userRepository.setActive(targetUserId, input.isActive);
-    return mapUser(updated);
+    return mapUser(updated as any);
+  },
+
+  async update(
+    actor: AccessTokenPayload,
+    targetUserId: string,
+    input: import('@meditrack/shared').UpdateUserInput,
+  ) {
+    if (actor.role !== 'NMS_ADMIN' && actor.role !== 'SUPER_ADMIN') {
+      throw new AppError('Access denied', 403, 'FORBIDDEN');
+    }
+
+    const target = await userRepository.findById(targetUserId);
+    if (!target) throw new AppError('User not found', 404, 'NOT_FOUND');
+
+    const updated = await userRepository.updateUser(targetUserId, input);
+    return mapUser(updated as any);
   },
 };

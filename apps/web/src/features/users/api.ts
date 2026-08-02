@@ -20,6 +20,17 @@ export async function createUser(input: RegisterInput): Promise<UserListItem> {
 export async function setUserActive(id: string, isActive: boolean): Promise<UserListItem> {
   const res = await api.patch<ApiResponse<UserListItem>>(`/users/${id}/status`, { isActive });
   if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.error?.message ?? 'Failed to update user status');
+  }
+  return res.data.data;
+}
+
+export async function updateUser(
+  id: string,
+  input: import('@meditrack/shared').UpdateUserInput,
+): Promise<UserListItem> {
+  const res = await api.patch<ApiResponse<UserListItem>>(`/users/${id}`, input);
+  if (!res.data.success || !res.data.data) {
     throw new Error(res.data.error?.message ?? 'Failed to update user');
   }
   return res.data.data;

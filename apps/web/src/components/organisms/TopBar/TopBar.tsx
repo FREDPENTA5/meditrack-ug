@@ -1,7 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, LogOut, Menu, PanelLeft, Settings, User } from 'lucide-react';
-import { Combobox } from '@/components/molecules/Combobox';
-import { GlobalSearch } from '@/components/organisms/GlobalSearch/GlobalSearch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,9 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { getContextLabel } from '@/lib/navigation';
+import { GlobalSearch } from '@/components/organisms/GlobalSearch/GlobalSearch';
 import { useAuthStore } from '@/stores/authStore';
 import { useLayoutStore } from '@/stores/layoutStore';
+import { getContextLabel } from '@/lib/navigation';
+
 import { logoutRequest } from '@/features/auth/api';
 
 interface TopBarProps {
@@ -73,13 +73,10 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
           <PanelLeft className="h-5 w-5" />
         </Button>
 
-        <div className="hidden min-w-0 sm:block max-w-[240px] w-full">
-          <Combobox
-            options={[{ value: user.facilityId ?? '', label: contextLabel }]}
-            value={user.facilityId ?? ''}
-            onChange={() => {}}
-            className="h-9"
-          />
+        <div className="hidden min-w-0 max-w-[240px] sm:block">
+          <div className="flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium">
+            <span className="truncate">{contextLabel}</span>
+          </div>
         </div>
 
         <div className="hidden min-w-0 flex-1 md:block max-w-md ml-4">
@@ -103,14 +100,19 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-2 px-2">
+              <Button
+                type="button"
+                variant="ghost"
+                className="gap-2 px-2"
+                aria-label="Account menu"
+              >
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="text-xs">{getInitials(user.fullName)}</AvatarFallback>
                 </Avatar>
                 <ChevronDown className="hidden h-4 w-4 opacity-50 md:block" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="z-50 w-56">
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user.fullName}</p>
@@ -118,21 +120,19 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/settings">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Link>
+              <DropdownMenuItem onSelect={() => navigate('/settings')}>
+                <User className="mr-2 h-4 w-4" />
+                Profile
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </Link>
+              <DropdownMenuItem onSelect={() => navigate('/settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={handleLogout}
+                onSelect={() => {
+                  void handleLogout();
+                }}
                 className="text-destructive focus:text-destructive"
               >
                 <LogOut className="mr-2 h-4 w-4" />

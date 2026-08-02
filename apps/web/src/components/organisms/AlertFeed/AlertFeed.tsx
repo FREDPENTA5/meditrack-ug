@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,6 +19,7 @@ function severityToBadge(severity: DashboardAlert['severity']) {
 }
 
 export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProps) {
+  const navigate = useNavigate();
   if (isLoading) {
     return (
       <div className={cn('space-y-0', !embedded && 'space-y-3')} aria-live="polite">
@@ -62,9 +63,10 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
     >
       {alerts.map((alert) => (
         <li key={alert.id}>
-          <Link
-            to={`/alerts/${alert.id}`}
-            className="group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40 sm:px-5"
+          <button
+            type="button"
+            onClick={() => navigate(`/alerts/${alert.id}`)}
+            className="group flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/40 sm:px-5"
           >
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
@@ -86,7 +88,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
               className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
               aria-hidden="true"
             />
-          </Link>
+          </button>
         </li>
       ))}
     </ul>
