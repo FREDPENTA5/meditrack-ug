@@ -13,6 +13,7 @@ function toAuthUser(user: {
   id: string;
   email: string;
   fullName: string;
+  phone?: string | null;
   role: AuthUser['role'];
   facilityId: string | null;
   districtId: string | null;
@@ -21,6 +22,7 @@ function toAuthUser(user: {
     id: user.id,
     email: user.email,
     fullName: user.fullName,
+    phone: user.phone ?? null,
     role: user.role,
     facilityId: user.facilityId,
     districtId: user.districtId,
