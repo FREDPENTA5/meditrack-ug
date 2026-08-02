@@ -90,13 +90,28 @@ export const stockService = {
         notes: entry.notes,
       });
 
-      // If critical, fetch the DB-generated alert and dispatch an SMS to the DHO
+      // If critical, fetch or create the alert and dispatch an SMS to the DHO
       if (status === 'CRITICAL' || status === 'STOCKOUT') {
         const { prisma } = require('../lib/prisma');
-        const alert = await prisma.alert.findFirst({
+        let alert = await prisma.alert.findFirst({
           where: { facilityId: input.facilityId, drugId: entry.drugId, status: 'ACTIVE' },
           orderBy: { createdAt: 'desc' },
         });
+
+        // Fallback: If DB trigger is missing, create the alert manually
+        if (!alert) {
+          alert = await prisma.alert.create({
+            data: {
+              facilityId: input.facilityId,
+              drugId: entry.drugId,
+              drugName: drug.name,
+              severity: status === 'STOCKOUT' ? 'CRITICAL' : 'WARNING',
+              type: status === 'STOCKOUT' ? 'STOCKOUT' : 'STOCK_CRITICAL',
+              message: `Stock for ${drug.name} is ${status.toLowerCase()} (${entry.quantity} ${entry.unit} remaining).`,
+              status: 'ACTIVE',
+            },
+          });
+        }
 
         if (alert && !alert.smsDelivered) {
           const dho = await prisma.user.findFirst({
