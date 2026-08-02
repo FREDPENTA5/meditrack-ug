@@ -21,9 +21,25 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
   const token = authHeader.slice(7);
 
   try {
-    req.user = verifyAccessToken(token);
+    const rawPayload = verifyAccessToken(token) as any;
+
+    // Support Supabase JWT format
+    if (rawPayload.user_metadata) {
+      req.user = {
+        sub: rawPayload.sub,
+        email: rawPayload.email,
+        role: rawPayload.user_metadata.role,
+        facilityId: rawPayload.user_metadata.facilityId || null,
+        districtId: rawPayload.user_metadata.districtId || null,
+      } as AccessTokenPayload;
+    } else {
+      req.user = rawPayload as AccessTokenPayload;
+    }
+
     return next();
-  } catch {
-    return next(new AppError('Invalid or expired access token', 401, 'INVALID_TOKEN'));
+  } catch (err: any) {
+    return next(
+      new AppError('Invalid or expired access token: ' + err.message, 401, 'INVALID_TOKEN'),
+    );
   }
 }
