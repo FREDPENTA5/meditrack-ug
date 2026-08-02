@@ -60,6 +60,7 @@ export const userService = {
       email: input.email.toLowerCase(),
       passwordHash,
       fullName: input.fullName,
+      phone: input.phone || null,
       role: input.role,
       facilityId: input.facilityId,
       districtId: input.districtId,

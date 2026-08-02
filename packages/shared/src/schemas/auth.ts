@@ -23,6 +23,7 @@ export const RegisterSchema = z.object({
     .min(1, 'Password is required')
     .min(8, 'Password must be at least 8 characters'),
   fullName: z.string().min(1, 'Full name is required'),
+  phone: z.string().optional().nullable(),
   role: RoleSchema.optional().default('FACILITY_WORKER'),
   facilityId: z.string().optional().nullable(),
   districtId: z.string().optional().nullable(),

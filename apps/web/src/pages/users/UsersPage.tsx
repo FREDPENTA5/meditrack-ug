@@ -102,6 +102,7 @@ export default function UsersPage() {
     reset({
       fullName: user.fullName,
       email: user.email,
+      phone: user.phone ?? '',
       role: user.role,
       districtId: user.districtId ?? undefined,
       facilityId: user.facilityId ?? undefined,
@@ -174,6 +175,13 @@ export default function UsersPage() {
                     )}
                   </div>
                 )}
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input id="phone" type="tel" placeholder="+256781175722" {...register('phone')} />
+                  {errors.phone && (
+                    <p className="text-sm text-destructive">{errors.phone.message}</p>
+                  )}
+                </div>
                 <div>
                   <Label htmlFor="role">Role</Label>
                   <select
