@@ -77,15 +77,22 @@ export default function UsersPage() {
         },
       );
     } else {
-      createUser.mutate(data, {
-        onSuccess: (created) => {
-          setSuccessMsg(
-            `✓ User "${created.fullName}" created. They will receive a confirmation email to activate their account.`,
-          );
-          setIsCreating(false);
-          reset();
+      createUser.mutate(
+        {
+          ...data,
+          districtId: data.districtId || null,
+          facilityId: data.facilityId || null,
         },
-      });
+        {
+          onSuccess: (created) => {
+            setSuccessMsg(
+              `✓ User "${created.fullName}" created. They will receive a confirmation email to activate their account.`,
+            );
+            setIsCreating(false);
+            reset();
+          },
+        },
+      );
     }
   };
 
@@ -219,7 +226,8 @@ export default function UsersPage() {
                 )}
                 {createUser.isError && (
                   <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                    {(createUser.error as Error)?.message ??
+                    {(createUser.error as any)?.response?.data?.error?.message ??
+                      (createUser.error as Error)?.message ??
                       'Failed to create user. Please try again.'}
                   </div>
                 )}
