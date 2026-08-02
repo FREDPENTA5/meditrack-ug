@@ -44,7 +44,11 @@ export async function getTransporter() {
   return testAccountPromise;
 }
 
-export async function sendEmailAlert(to: string, subject: string, html: string): Promise<boolean> {
+export async function sendEmailAlert(
+  to: string,
+  subject: string,
+  html: string,
+): Promise<boolean | string> {
   try {
     const transporter = await getTransporter();
 
@@ -66,6 +70,6 @@ export async function sendEmailAlert(to: string, subject: string, html: string):
     return true;
   } catch (error) {
     logger.error(`Failed to send email to ${to}: ${error}`);
-    return false;
+    return String(error);
   }
 }

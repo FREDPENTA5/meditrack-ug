@@ -19,7 +19,7 @@ export const alertWorker = new Worker<AlertJobData>(
     const { alertId, phone, email, message } = job.data;
 
     let smsSuccess = false;
-    let emailSuccess = false;
+    let emailSuccess: boolean | string = false;
 
     if (phone) {
       smsSuccess = await sendSmsAlert(phone, message);
@@ -37,14 +37,16 @@ export const alertWorker = new Worker<AlertJobData>(
       emailSuccess = await sendEmailAlert(email, 'MediTrack Critical Alert', htmlMessage);
     }
 
-    if (smsSuccess || emailSuccess) {
+    if (smsSuccess === true || emailSuccess === true) {
       // Update the database to reflect that the alert was delivered
       await alertRepository.markSmsDelivered(alertId);
       logger.info(
         `Marked alert ${alertId} as delivered (SMS: ${smsSuccess}, Email: ${emailSuccess})`,
       );
     } else {
-      throw new Error(`Failed to send alert ${alertId} (no delivery channels succeeded)`);
+      throw new Error(
+        `Failed to send alert ${alertId} (no delivery channels succeeded). Email Error: ${emailSuccess}`,
+      );
     }
   },
   {

@@ -8,8 +8,18 @@ import { alertRouter } from './alert.routes';
 import { userRouter } from './user.routes';
 import { reportRouter } from './report.routes';
 import { districtRouter } from './district.routes';
+import { sendEmailAlert } from '../lib/nodemailer';
 
 export const apiRouter = Router();
+
+apiRouter.get('/debug/email', async (req, res) => {
+  try {
+    const success = await sendEmailAlert('lnakiregga@gmail.com', 'Debug Test', 'Testing from API');
+    res.json({ success, message: 'Test completed' });
+  } catch (error) {
+    res.json({ success: false, error: String(error) });
+  }
+});
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/facilities', facilityRouter);
