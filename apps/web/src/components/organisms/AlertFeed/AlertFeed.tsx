@@ -80,7 +80,10 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
 
   return (
     <ul
-      className={cn('divide-y divide-border/60', !embedded && 'rounded-lg border')}
+      className={cn(
+        'divide-y divide-border/60',
+        embedded ? 'max-h-[400px] overflow-y-auto' : 'rounded-lg border',
+      )}
       aria-live="polite"
     >
       {alerts.map((alert) => (
