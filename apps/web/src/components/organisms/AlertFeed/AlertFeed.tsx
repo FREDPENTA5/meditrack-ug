@@ -90,17 +90,19 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
   ) => {
     if (!categoryAlerts.length) return null;
     return (
-      <div className="flex flex-col">
+      <div
+        className={cn('flex flex-col rounded-[14px] border overflow-hidden shadow-xs', borderClass)}
+      >
         <div
           className={cn(
-            'sticky top-0 z-10 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md bg-white/90 border-y',
+            'sticky top-0 z-10 px-5 py-3 text-[12px] font-bold uppercase tracking-wider border-b',
             titleClass,
             borderClass,
           )}
         >
           {title} ({categoryAlerts.length})
         </div>
-        <ul className="divide-y divide-border/60 max-h-[240px] overflow-y-auto">
+        <ul className="divide-y divide-neutral-100 max-h-[300px] overflow-y-auto bg-white">
           {categoryAlerts.map((alert) => (
             <li key={alert.id}>
               <button
@@ -135,12 +137,26 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
 
   return (
     <div
-      className={cn('flex flex-col bg-white', !embedded && 'rounded-lg border')}
+      className={cn(
+        'grid grid-cols-1 lg:grid-cols-2 gap-6',
+        !embedded
+          ? 'rounded-2xl border border-neutral-200 p-4 sm:p-6 bg-white shadow-sm'
+          : 'p-4 sm:p-6 bg-white rounded-2xl',
+      )}
       aria-live="polite"
     >
-      {renderCategory('Critical', criticalAlerts, 'text-danger-700', 'border-danger-100')}
-      {renderCategory('Warning', warningAlerts, 'text-warning-700', 'border-warning-100')}
-      {renderCategory('Info', otherAlerts, 'text-info-700', 'border-info-100')}
+      {renderCategory(
+        'Critical Alerts',
+        criticalAlerts,
+        'text-danger-700 bg-danger-50/50',
+        'border-danger-100',
+      )}
+      {renderCategory(
+        'Warning Alerts',
+        warningAlerts,
+        'text-warning-700 bg-warning-50/50',
+        'border-warning-100',
+      )}
     </div>
   );
 }
