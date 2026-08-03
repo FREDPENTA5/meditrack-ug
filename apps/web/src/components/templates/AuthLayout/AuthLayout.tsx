@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export function AuthLayout() {
   const location = useLocation();
@@ -15,9 +15,9 @@ export function AuthLayout() {
           <div className="flex items-center">
             <Link to="/">
               <img
-                src="/logo.png"
+                src="/logo-full.png"
                 alt="MediTrack UG"
-                className="h-24 w-auto object-contain mix-blend-screen brightness-0 invert opacity-90"
+                className="h-20 w-auto object-contain brightness-0 invert"
               />
             </Link>
           </div>
