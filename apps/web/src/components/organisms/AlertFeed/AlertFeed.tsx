@@ -78,47 +78,69 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
     );
   }
 
+  const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
+  const warningAlerts = alerts.filter((a) => a.severity === 'WARNING');
+  const otherAlerts = alerts.filter((a) => a.severity !== 'CRITICAL' && a.severity !== 'WARNING');
+
+  const renderCategory = (
+    title: string,
+    categoryAlerts: DashboardAlert[],
+    titleClass: string,
+    borderClass: string,
+  ) => {
+    if (!categoryAlerts.length) return null;
+    return (
+      <div className="flex flex-col">
+        <div
+          className={cn(
+            'sticky top-0 z-10 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md bg-white/90 border-y',
+            titleClass,
+            borderClass,
+          )}
+        >
+          {title} ({categoryAlerts.length})
+        </div>
+        <ul className="divide-y divide-border/60 max-h-[240px] overflow-y-auto">
+          {categoryAlerts.map((alert) => (
+            <li key={alert.id}>
+              <button
+                type="button"
+                onClick={() => navigate(`/alerts/${alert.id}`)}
+                className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
+              >
+                <AlertIcon severity={alert.severity} />
+                <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4 items-center">
+                  <p className="truncate text-[13px] font-semibold text-foreground">
+                    {alert.drugName}
+                  </p>
+                  <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-right">
+                    {alert.facilityName}
+                    <span className="mx-1.5 text-border hidden sm:inline-block">·</span>
+                    <span className="text-[11px]">
+                      {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
+                    </span>
+                  </p>
+                </div>
+                <ChevronRight
+                  className="ml-3 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
+                  aria-hidden="true"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
   return (
-    <ul
-      className={cn(
-        'divide-y divide-border/60',
-        embedded ? 'max-h-[400px] overflow-y-auto' : 'rounded-lg border',
-      )}
+    <div
+      className={cn('flex flex-col bg-white', !embedded && 'rounded-lg border')}
       aria-live="polite"
     >
-      {alerts.map((alert) => (
-        <li key={alert.id}>
-          <button
-            type="button"
-            onClick={() => navigate(`/alerts/${alert.id}`)}
-            className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
-          >
-            <AlertIcon severity={alert.severity} />
-            <div className="min-w-0 flex-1 ml-3">
-              <div className="flex items-center gap-2">
-                <p className="truncate text-[13px] font-semibold text-foreground">
-                  {alert.drugName}
-                </p>
-                <Badge
-                  variant={severityToBadge(alert.severity)}
-                  className="hidden shrink-0 sm:inline-flex"
-                >
-                  {alert.severity}
-                </Badge>
-              </div>
-              <p className="mt-0.5 truncate text-[11px] font-medium text-muted-foreground">
-                {alert.facilityName}
-                <span className="mx-1.5 text-border">·</span>
-                {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-              </p>
-            </div>
-            <ChevronRight
-              className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
-              aria-hidden="true"
-            />
-          </button>
-        </li>
-      ))}
-    </ul>
+      {renderCategory('Critical', criticalAlerts, 'text-danger-700', 'border-danger-100')}
+      {renderCategory('Warning', warningAlerts, 'text-warning-700', 'border-warning-100')}
+      {renderCategory('Info', otherAlerts, 'text-info-700', 'border-info-100')}
+    </div>
   );
 }
