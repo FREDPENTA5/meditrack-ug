@@ -9,13 +9,8 @@ export default function LandingPage() {
       {/* HEADER */}
       <header className="absolute top-0 w-full z-50 bg-transparent">
         <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 lg:px-12">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-primary-700 text-white shadow-sm">
-              <Activity className="h-5 w-5" />
-            </div>
-            <span className="font-heading text-xl font-bold tracking-tight text-neutral-900">
-              MediTrack UG
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="MediTrack UG" className="h-10 md:h-12 object-contain" />
           </Link>
           <div className="flex items-center gap-6">
             <Link

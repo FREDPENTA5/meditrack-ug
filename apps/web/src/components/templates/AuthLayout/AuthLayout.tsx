@@ -12,13 +12,10 @@ export function AuthLayout() {
         <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
         <div className="relative flex flex-1 flex-col justify-between p-12 xl:p-16">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-primary-700 shadow-sm">
-              <Activity className="h-5 w-5 text-white" />
+          <div className="flex items-center">
+            <div className="rounded-xl bg-white p-2">
+              <img src="/logo.png" alt="MediTrack UG" className="h-10 object-contain" />
             </div>
-            <span className="font-heading text-xl font-bold text-white tracking-tight">
-              MediTrack UG
-            </span>
           </div>
 
           <div className="max-w-lg space-y-8">
@@ -46,11 +43,8 @@ export function AuthLayout() {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          <div className="flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-primary-700 text-white">
-              <Activity className="h-4 w-4" />
-            </div>
-            <span className="font-heading text-base font-bold text-neutral-900">MediTrack UG</span>
+          <div className="flex items-center lg:hidden">
+            <img src="/logo.png" alt="MediTrack UG" className="h-8 object-contain" />
           </div>
         </div>
 

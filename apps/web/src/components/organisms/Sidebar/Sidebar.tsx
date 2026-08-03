@@ -52,20 +52,20 @@ function SidebarNav({
           collapsed ? 'justify-center' : 'justify-between gap-2',
         )}
       >
-        <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-primary-700 text-white shadow-sm">
-            <BrandIcon className="h-5 w-5" />
-          </div>
-          {!collapsed && (
-            <div className="min-w-0">
-              <p className="truncate text-[15px] font-heading font-bold text-neutral-900">
-                {BRAND.name}
-              </p>
-              <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
-                Uganda
-              </p>
-            </div>
+        <div
+          className={cn(
+            'flex items-center',
+            collapsed ? 'justify-center' : 'justify-start w-full px-1',
           )}
+        >
+          <img
+            src="/logo.png"
+            alt="MediTrack Logo"
+            className={cn(
+              'object-contain transition-all duration-200',
+              collapsed ? 'h-8' : 'h-10 w-auto',
+            )}
+          />
         </div>
         {onClose && (
           <Button
