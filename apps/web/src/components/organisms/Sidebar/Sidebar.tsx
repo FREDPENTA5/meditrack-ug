@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -6,7 +5,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/cn';
-import { BRAND, formatRole, getNavItemsForRole } from '@/lib/navigation';
+import { formatRole, getNavItemsForRole } from '@/lib/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useLayoutStore } from '@/stores/layoutStore';
 
@@ -42,28 +41,63 @@ function SidebarNav({
     item.path === '/alerts' && alertCount > 0 ? { ...item, badge: alertCount } : item,
   );
 
-  const BrandIcon = BRAND.icon;
+  const mainItems = navItems.filter((item) => item.section === 'main');
+  const managementItems = navItems.filter((item) => item.section === 'management');
+
+  const renderNavItem = (item: (typeof navItems)[0]) => {
+    const Icon = item.icon;
+    return (
+      <NavLink
+        key={item.path}
+        to={item.path}
+        onClick={onNavigate}
+        title={collapsed ? item.label : undefined}
+        className={({ isActive }) =>
+          cn(
+            'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-150',
+            isActive
+              ? 'bg-[var(--surface-sidebar-item-active)] text-[var(--sidebar-active-text)] font-semibold'
+              : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800',
+            collapsed && 'justify-center px-2',
+          )
+        }
+      >
+        <Icon className={cn('h-[18px] w-[18px] shrink-0', collapsed && 'h-5 w-5')} />
+        {!collapsed && (
+          <>
+            <span className="flex-1 truncate">{item.label}</span>
+            {item.badge !== undefined && item.badge > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-danger-500 px-1.5 text-[10px] font-bold text-white">
+                {item.badge > 9 ? '9+' : item.badge}
+              </span>
+            )}
+          </>
+        )}
+        {collapsed && item.badge !== undefined && item.badge > 0 && (
+          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-danger-500 border-2 border-white" />
+        )}
+      </NavLink>
+    );
+  };
 
   return (
     <div className="flex h-full flex-col bg-white text-neutral-900 border-r border-neutral-100">
+      {/* Logo */}
       <div
         className={cn(
-          'flex h-topbar shrink-0 items-center px-4',
+          'flex shrink-0 items-center px-4 py-5',
           collapsed ? 'justify-center' : 'justify-between gap-2',
         )}
       >
         <div
-          className={cn(
-            'flex items-center',
-            collapsed ? 'justify-center' : 'justify-start w-full px-1',
-          )}
+          className={cn('flex items-center', collapsed ? 'justify-center' : 'justify-start w-full')}
         >
           <img
             src="/logo.png"
             alt="MediTrack Logo"
             className={cn(
               'object-contain transition-all duration-200',
-              collapsed ? 'h-10' : 'h-14 w-auto',
+              collapsed ? 'h-9' : 'h-12 w-auto',
             )}
           />
         </div>
@@ -79,74 +113,57 @@ function SidebarNav({
         )}
       </div>
 
-      <div className="px-4 py-2">
-        <Separator className="bg-neutral-100" />
-      </div>
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 pb-3" aria-label="Main navigation">
+        {/* Main Menu section */}
+        {!collapsed && mainItems.length > 0 && (
+          <p className="mb-2 mt-1 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+            Main Menu
+          </p>
+        )}
+        <div className="space-y-0.5">{mainItems.map(renderNavItem)}</div>
 
-      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3" aria-label="Main navigation">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={onNavigate}
-              title={collapsed ? item.label : undefined}
-              className={({ isActive }) =>
-                cn(
-                  'relative flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-sm font-medium transition-all duration-200',
-                  isActive
-                    ? 'bg-primary-50 text-primary-700 font-semibold'
-                    : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900',
-                  collapsed && 'justify-center px-2',
-                )
-              }
-            >
-              <Icon className={cn('h-5 w-5 shrink-0', collapsed && 'h-6 w-6')} />
-              {!collapsed && (
-                <>
-                  <span className="flex-1 truncate">{item.label}</span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-danger-500 px-1.5 text-[10px] font-bold text-white shadow-sm">
-                      {item.badge > 9 ? '9+' : item.badge}
-                    </span>
-                  )}
-                </>
-              )}
-              {collapsed && item.badge !== undefined && item.badge > 0 && (
-                <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-danger-500 shadow-sm border-2 border-white" />
-              )}
-            </NavLink>
-          );
-        })}
+        {/* Management section */}
+        {managementItems.length > 0 && (
+          <>
+            {!collapsed && (
+              <p className="mb-2 mt-6 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+                Management
+              </p>
+            )}
+            {collapsed && <Separator className="my-3 bg-neutral-100" />}
+            <div className="space-y-0.5">{managementItems.map(renderNavItem)}</div>
+          </>
+        )}
       </nav>
 
-      <div className="px-4 py-2">
-        <Separator className="bg-neutral-100" />
-      </div>
-
-      <div className={cn('p-3', collapsed && 'flex justify-center')}>
-        <NavLink
-          to="/settings"
-          className={cn(
-            'flex items-center gap-3 rounded-[12px] p-2 transition-all hover:bg-neutral-100',
-            collapsed && 'p-1.5',
-          )}
-        >
-          <Avatar className="h-9 w-9 shadow-sm border border-neutral-100">
-            <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
-              {getInitials(user.fullName)}
-            </AvatarFallback>
-          </Avatar>
-          {!collapsed && (
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-bold text-neutral-900">{user.fullName}</p>
-              <p className="truncate text-[11px] font-medium text-neutral-500">
-                {formatRole(user.role)}
-              </p>
-            </div>
-          )}
-        </NavLink>
+      {/* User profile */}
+      <div className="border-t border-neutral-100">
+        <div className={cn('p-3', collapsed && 'flex justify-center')}>
+          <NavLink
+            to="/settings"
+            className={cn(
+              'flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-neutral-100',
+              collapsed && 'p-1.5',
+            )}
+          >
+            <Avatar className="h-9 w-9 border border-neutral-200">
+              <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
+                {getInitials(user.fullName)}
+              </AvatarFallback>
+            </Avatar>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-semibold text-neutral-900">
+                  {user.fullName}
+                </p>
+                <p className="truncate text-[11px] font-medium text-neutral-400">
+                  {formatRole(user.role)}
+                </p>
+              </div>
+            )}
+          </NavLink>
+        </div>
       </div>
     </div>
   );

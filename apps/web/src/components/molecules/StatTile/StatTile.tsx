@@ -13,6 +13,13 @@ export interface StatTileProps {
   emphasize?: boolean;
 }
 
+const iconWrapStyles: Record<StatTileVariant, string> = {
+  default: 'bg-neutral-100 text-neutral-500',
+  adequate: 'bg-success-50 text-success-600',
+  low: 'bg-warning-50 text-warning-600',
+  critical: 'bg-danger-50 text-danger-600',
+};
+
 const valueStyles: Record<StatTileVariant, string> = {
   default: 'text-foreground',
   adequate: 'text-foreground',
@@ -34,28 +41,28 @@ export function StatTile({
     emphasize || variant === 'critical' || (variant === 'low' && numericValue > 0);
 
   return (
-    <div className={cn('bg-card px-5 py-4 sm:px-6 sm:py-5', className)}>
+    <div
+      className={cn(
+        'rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs transition-shadow hover:shadow-sm',
+        className,
+      )}
+    >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {label}
-        </p>
+        <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
         {Icon && (
-          <Icon
+          <div
             className={cn(
-              'h-4 w-4 shrink-0',
-              shouldEmphasize && variant === 'critical'
-                ? 'text-destructive/70'
-                : shouldEmphasize && variant === 'low'
-                  ? 'text-warning-600/70'
-                  : 'text-muted-foreground/60',
+              'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
+              iconWrapStyles[variant],
             )}
-            aria-hidden="true"
-          />
+          >
+            <Icon className="h-4 w-4" aria-hidden="true" />
+          </div>
         )}
       </div>
       <p
         className={cn(
-          'mt-2 font-heading text-3xl font-bold tabular-nums tracking-tight',
+          'mt-2 font-heading text-[28px] font-bold tabular-nums tracking-tight',
           shouldEmphasize ? valueStyles[variant] : 'text-foreground',
         )}
       >

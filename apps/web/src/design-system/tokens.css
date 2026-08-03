@@ -19,7 +19,7 @@
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 222.2 47.4% 11.2%;
-  --radius: 1rem;
+  --radius: 0.75rem;
   --chart-1: 173 80% 40%;
   --chart-2: 38 92% 50%;
   --chart-3: 0 84% 55%;
@@ -105,7 +105,8 @@
   --surface-overlay: rgba(15, 23, 42, 0.6);
   --surface-sidebar: var(--color-neutral-0);
   --surface-sidebar-item-hover: var(--color-neutral-100);
-  --surface-sidebar-item-active: var(--color-neutral-200);
+  --surface-sidebar-item-active: #e8f0fe;
+  --sidebar-active-text: #1a73e8;
 
   --text-primary: var(--color-neutral-900);
   --text-secondary: var(--color-neutral-600);
@@ -155,23 +156,23 @@
   --content-max-width: 1280px;
 
   /* Elevation */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
-  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.06), 0 8px 16px -6px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 24px 48px -12px rgba(15, 23, 42, 0.08);
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.04), 0 2px 4px -2px rgba(15, 23, 42, 0.02);
+  --shadow-lg: 0 10px 20px -4px rgba(15, 23, 42, 0.05), 0 6px 12px -6px rgba(15, 23, 42, 0.03);
+  --shadow-xl: 0 20px 40px -12px rgba(15, 23, 42, 0.06);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
-  --shadow-danger: 0 4px 14px 0 rgba(239, 68, 68, 0.15);
-  --shadow-warning: 0 4px 14px 0 rgba(245, 158, 11, 0.15);
-  --shadow-success: 0 4px 14px 0 rgba(34, 197, 94, 0.15);
+  --shadow-danger: 0 4px 14px 0 rgba(239, 68, 68, 0.12);
+  --shadow-warning: 0 4px 14px 0 rgba(245, 158, 11, 0.12);
+  --shadow-success: 0 4px 14px 0 rgba(34, 197, 94, 0.12);
 
   /* Border radius */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
-  --radius-3xl: 36px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 28px;
   --radius-full: 9999px;
 
   /* Motion */

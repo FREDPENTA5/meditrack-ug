@@ -16,6 +16,7 @@ export interface NavItem {
   path: string;
   icon: LucideIcon;
   roles: Role[];
+  section: 'main' | 'management';
   badge?: number;
 }
 
@@ -24,42 +25,49 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Dashboard',
     path: '/dashboard',
     icon: LayoutDashboard,
+    section: 'main',
     roles: ['FACILITY_WORKER', 'DISTRICT_OFFICER', 'NMS_ADMIN', 'SUPER_ADMIN'],
   },
   {
     label: 'Facilities',
     path: '/facilities',
     icon: Building2,
+    section: 'main',
     roles: ['DISTRICT_OFFICER', 'NMS_ADMIN', 'SUPER_ADMIN'],
   },
   {
     label: 'Stock Entry',
     path: '/stock-entry',
     icon: ClipboardList,
+    section: 'main',
     roles: ['FACILITY_WORKER'],
   },
   {
     label: 'Alerts',
     path: '/alerts',
     icon: AlertTriangle,
+    section: 'main',
     roles: ['FACILITY_WORKER', 'DISTRICT_OFFICER', 'NMS_ADMIN', 'SUPER_ADMIN'],
   },
   {
     label: 'Reports',
     path: '/reports',
     icon: FileBarChart,
+    section: 'management',
     roles: ['DISTRICT_OFFICER', 'NMS_ADMIN', 'SUPER_ADMIN'],
   },
   {
     label: 'Users',
     path: '/users',
     icon: Users,
+    section: 'management',
     roles: ['NMS_ADMIN', 'SUPER_ADMIN'],
   },
   {
     label: 'Settings',
     path: '/settings',
     icon: Settings,
+    section: 'management',
     roles: ['FACILITY_WORKER', 'DISTRICT_OFFICER', 'NMS_ADMIN', 'SUPER_ADMIN'],
   },
 ];

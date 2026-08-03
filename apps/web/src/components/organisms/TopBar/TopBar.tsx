@@ -13,8 +13,6 @@ import {
 import { GlobalSearch } from '@/components/organisms/GlobalSearch/GlobalSearch';
 import { useAuthStore } from '@/stores/authStore';
 import { useLayoutStore } from '@/stores/layoutStore';
-import { getContextLabel } from '@/lib/navigation';
-
 import { logoutRequest } from '@/features/auth/api';
 
 interface TopBarProps {
@@ -39,8 +37,6 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
 
   if (!user) return null;
 
-  const contextLabel = getContextLabel(user);
-
   const handleLogout = async () => {
     try {
       await logoutRequest();
@@ -51,7 +47,7 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white">
       <div className="flex h-topbar items-center gap-3 px-4 sm:gap-4 sm:px-6">
         <Button
           variant="ghost"
@@ -72,12 +68,6 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
         >
           <PanelLeft className="h-5 w-5" />
         </Button>
-
-        <div className="hidden min-w-0 max-w-[240px] sm:block">
-          <div className="flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium">
-            <span className="truncate">{contextLabel}</span>
-          </div>
-        </div>
 
         <div className="hidden min-w-0 flex-1 md:block max-w-md ml-4">
           <GlobalSearch />
