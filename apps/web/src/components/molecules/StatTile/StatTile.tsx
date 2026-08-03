@@ -14,10 +14,10 @@ export interface StatTileProps {
 }
 
 const iconWrapStyles: Record<StatTileVariant, string> = {
-  default: 'bg-neutral-100 text-neutral-500',
-  adequate: 'bg-success-50 text-success-600',
-  low: 'bg-warning-50 text-warning-600',
-  critical: 'bg-danger-50 text-danger-600',
+  default: 'text-neutral-800',
+  adequate: 'text-neutral-800',
+  low: 'text-neutral-800',
+  critical: 'text-neutral-800',
 };
 
 const valueStyles: Record<StatTileVariant, string> = {
@@ -50,12 +50,7 @@ export function StatTile({
       <div className="flex items-start justify-between gap-3">
         <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
         {Icon && (
-          <div
-            className={cn(
-              'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
-              iconWrapStyles[variant],
-            )}
-          >
+          <div className={cn('flex shrink-0 items-center justify-center', iconWrapStyles[variant])}>
             <Icon className="h-4 w-4" aria-hidden="true" />
           </div>
         )}

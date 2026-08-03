@@ -45,9 +45,9 @@ export default function DashboardPage() {
           description="Live counts across your facility formulary"
         >
           {summary.isLoading ? (
-            <KpiSkeleton count={3} />
+            <KpiSkeleton count={4} />
           ) : (
-            <KpiGrid>
+            <KpiGrid columns={4}>
               <StatTile
                 label="Drugs OK"
                 value={data?.drugsOk ?? 0}
@@ -67,6 +67,13 @@ export default function DashboardPage() {
                 icon={AlertTriangle}
                 variant="critical"
                 emphasize
+              />
+              <StatTile
+                label="Unresolved Alerts"
+                value={data?.unresolvedAlerts ?? 0}
+                icon={AlertTriangle}
+                variant="low"
+                emphasize={(data?.unresolvedAlerts ?? 0) > 0}
               />
             </KpiGrid>
           )}
