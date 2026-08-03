@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { DashboardAlert } from '@/features/dashboard/api';
@@ -16,6 +16,28 @@ function severityToBadge(severity: DashboardAlert['severity']) {
   if (severity === 'CRITICAL') return 'destructive' as const;
   if (severity === 'WARNING') return 'warning' as const;
   return 'secondary' as const;
+}
+
+function AlertIcon({ severity }: { severity: DashboardAlert['severity'] }) {
+  if (severity === 'CRITICAL') {
+    return (
+      <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-danger-50 text-danger-600">
+        <AlertCircle className="h-[18px] w-[18px]" />
+      </div>
+    );
+  }
+  if (severity === 'WARNING') {
+    return (
+      <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-warning-50 text-warning-600">
+        <AlertTriangle className="h-[18px] w-[18px]" />
+      </div>
+    );
+  }
+  return (
+    <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-info-50 text-info-600">
+      <Info className="h-[18px] w-[18px]" />
+    </div>
+  );
 }
 
 export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProps) {
@@ -66,11 +88,14 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
           <button
             type="button"
             onClick={() => navigate(`/alerts/${alert.id}`)}
-            className="group flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/40 sm:px-5"
+            className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
           >
-            <div className="min-w-0 flex-1">
+            <AlertIcon severity={alert.severity} />
+            <div className="min-w-0 flex-1 ml-3">
               <div className="flex items-center gap-2">
-                <p className="truncate text-sm font-medium text-foreground">{alert.drugName}</p>
+                <p className="truncate text-[13px] font-semibold text-foreground">
+                  {alert.drugName}
+                </p>
                 <Badge
                   variant={severityToBadge(alert.severity)}
                   className="hidden shrink-0 sm:inline-flex"
@@ -78,7 +103,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
                   {alert.severity}
                 </Badge>
               </div>
-              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+              <p className="mt-0.5 truncate text-[11px] font-medium text-muted-foreground">
                 {alert.facilityName}
                 <span className="mx-1.5 text-border">·</span>
                 {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}

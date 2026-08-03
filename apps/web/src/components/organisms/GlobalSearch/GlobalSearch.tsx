@@ -40,7 +40,7 @@ export function GlobalSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 w-full max-w-sm items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex h-10 w-full max-w-sm items-center justify-between whitespace-nowrap rounded-[10px] bg-neutral-100/60 px-4 py-2 text-[13px] font-medium text-neutral-400 transition-colors hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
       >
         <span className="flex items-center gap-2">
           <Search className="h-4 w-4 shrink-0" />
