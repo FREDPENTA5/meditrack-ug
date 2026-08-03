@@ -13,9 +13,13 @@ export function AuthLayout() {
 
         <div className="relative flex flex-1 flex-col justify-between p-12 xl:p-16">
           <div className="flex items-center">
-            <div className="rounded-xl bg-white p-2">
-              <img src="/logo.png" alt="MediTrack UG" className="h-10 object-contain" />
-            </div>
+            <Link to="/">
+              <img
+                src="/logo.png"
+                alt="MediTrack UG"
+                className="h-24 w-auto object-contain mix-blend-screen brightness-0 invert opacity-90"
+              />
+            </Link>
           </div>
 
           <div className="max-w-lg space-y-8">
@@ -44,7 +48,7 @@ export function AuthLayout() {
             Back to Home
           </Link>
           <div className="flex items-center lg:hidden">
-            <img src="/logo.png" alt="MediTrack UG" className="h-8 object-contain" />
+            <img src="/logo.png" alt="MediTrack UG" className="h-12 object-contain" />
           </div>
         </div>
 
