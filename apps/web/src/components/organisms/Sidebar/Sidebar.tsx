@@ -147,13 +147,9 @@ function SidebarNav({
               collapsed && 'p-1.5',
             )}
           >
-            <Avatar className="h-9 w-9 border border-neutral-200">
+            <Avatar className="h-11 w-11 border border-neutral-200">
               {user.fullName.toLowerCase().includes('sarah') && (
-                <AvatarImage
-                  src="/sarah.jpg"
-                  alt={user.fullName}
-                  className="object-cover scale-[1.6]"
-                />
+                <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
               )}
               <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
                 {getInitials(user.fullName)}

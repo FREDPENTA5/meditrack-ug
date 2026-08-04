@@ -96,13 +96,9 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
                 className="gap-2 px-2"
                 aria-label="Account menu"
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-10 w-10">
                   {user.fullName.toLowerCase().includes('sarah') && (
-                    <AvatarImage
-                      src="/sarah.jpg"
-                      alt={user.fullName}
-                      className="object-cover scale-[1.6]"
-                    />
+                    <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
                   )}
                   <AvatarFallback className="text-xs">{getInitials(user.fullName)}</AvatarFallback>
                 </Avatar>
