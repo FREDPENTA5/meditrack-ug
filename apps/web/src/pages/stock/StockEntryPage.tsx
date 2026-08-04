@@ -187,7 +187,7 @@ export default function StockEntryPage() {
           </div>
 
           <div className="flex-1 flex flex-col min-h-0 bg-transparent">
-            <div className="p-0 flex-1 overflow-y-auto bg-card">
+            <div className="p-0 flex-1 flex flex-col min-h-0 bg-card">
               {stock.isLoading ? (
                 <div className="space-y-2 p-6">
                   <Skeleton className="h-10 w-full" />
@@ -202,7 +202,7 @@ export default function StockEntryPage() {
                   />
                 </div>
               ) : (
-                <Table>
+                <Table wrapperClassName="flex-1 min-h-0">
                   <TableHeader className="bg-black sticky top-0 z-10">
                     <TableRow className="hover:bg-transparent border-none">
                       <TableHead className="font-bold text-white text-[11px] uppercase tracking-widest h-14 px-6">
