@@ -83,7 +83,7 @@ export default function StockEntryPage() {
     })) ?? [];
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="w-[97%] max-w-[1400px] mx-auto space-y-8 pb-10">
       <PageHeader title="Stock Entry" description="Log current drug quantities for your facility" />
 
       <div className="grid gap-8 xl:grid-cols-[380px_1fr] items-start">
