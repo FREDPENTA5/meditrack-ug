@@ -33,7 +33,7 @@ export default function DashboardPage() {
 
   const summary = useDashboardSummary();
   const map = useDashboardMap();
-  const alerts = useRecentAlerts(8);
+  const alerts = useRecentAlerts(50);
 
   if (isFacilityWorker) {
     const { data } = summary;
