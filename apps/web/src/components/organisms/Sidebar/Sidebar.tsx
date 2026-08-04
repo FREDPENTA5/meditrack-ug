@@ -149,7 +149,11 @@ function SidebarNav({
           >
             <Avatar className="h-9 w-9 border border-neutral-200">
               {user.fullName.toLowerCase().includes('sarah') && (
-                <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
+                <AvatarImage
+                  src="/sarah.jpg"
+                  alt={user.fullName}
+                  className="object-cover scale-[1.6]"
+                />
               )}
               <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
                 {getInitials(user.fullName)}

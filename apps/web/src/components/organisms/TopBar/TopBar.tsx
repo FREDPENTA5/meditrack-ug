@@ -98,7 +98,11 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
               >
                 <Avatar className="h-8 w-8">
                   {user.fullName.toLowerCase().includes('sarah') && (
-                    <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
+                    <AvatarImage
+                      src="/sarah.jpg"
+                      alt={user.fullName}
+                      className="object-cover scale-[1.6]"
+                    />
                   )}
                   <AvatarFallback className="text-xs">{getInitials(user.fullName)}</AvatarFallback>
                 </Avatar>
