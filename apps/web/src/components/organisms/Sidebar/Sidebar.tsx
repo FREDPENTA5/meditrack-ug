@@ -85,7 +85,7 @@ function SidebarNav({
       {/* Logo */}
       <div
         className={cn(
-          'flex shrink-0 items-center px-4 py-5',
+          'flex shrink-0 items-center px-4 pt-5 pb-1',
           collapsed ? 'justify-center' : 'justify-between gap-2',
         )}
       >
@@ -117,7 +117,7 @@ function SidebarNav({
       <nav className="flex-1 overflow-y-auto px-3 pb-3" aria-label="Main navigation">
         {/* Main Menu section */}
         {!collapsed && mainItems.length > 0 && (
-          <p className="mb-2 mt-1 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+          <p className="mb-2 -mt-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
             Main Menu
           </p>
         )}
