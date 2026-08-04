@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Spinner } from '../../../components/atoms/Spinner';
 import { refreshSessionRequest } from '../api';
 import { useAuthStore } from '../../../stores/authStore';
 
@@ -37,7 +36,13 @@ export function AuthBootstrap({ children }: AuthBootstrapProps) {
   if (!isBootstrapped) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <Spinner size="lg" label="Loading MediTrack" />
+        <div className="flex flex-col items-center animate-pulse">
+          <img
+            src="/logo.png"
+            alt="MediTrack Loading..."
+            className="h-16 w-auto object-contain opacity-70"
+          />
+        </div>
       </div>
     );
   }
