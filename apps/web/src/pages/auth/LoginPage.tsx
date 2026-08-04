@@ -27,11 +27,12 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2 text-center sm:text-left">
+      <header className="flex flex-col items-center sm:items-start text-center sm:text-left">
+        <img src="/logo.png" alt="MediTrack Logo" className="h-12 w-auto mb-6" />
         <h1 className="font-heading text-3xl font-bold tracking-tight text-neutral-900">
           Welcome back
         </h1>
-        <p className="text-base text-neutral-500">
+        <p className="mt-2 text-base text-neutral-500">
           Sign in to manage drug stock for your facility or district.
         </p>
       </header>
