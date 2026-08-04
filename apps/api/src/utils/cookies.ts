@@ -6,19 +6,19 @@ const REFRESH_COOKIE = 'meditrack_refresh_token';
 export function setRefreshTokenCookie(res: Response, token: string, expiresAt: Date) {
   res.cookie(REFRESH_COOKIE, token, {
     httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: true,
+    sameSite: 'none',
     expires: expiresAt,
-    path: '/api/v1/auth',
+    path: '/',
   });
 }
 
 export function clearRefreshTokenCookie(res: Response) {
   res.clearCookie(REFRESH_COOKIE, {
     httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/api/v1/auth',
+    secure: true,
+    sameSite: 'none',
+    path: '/',
   });
 }
 
