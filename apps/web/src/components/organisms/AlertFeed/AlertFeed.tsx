@@ -75,7 +75,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false, listClassName }
     <div
       className={cn(
         'flex flex-col bg-white overflow-hidden',
-        !embedded && 'rounded-2xl border border-neutral-200',
+        !embedded && 'rounded-2xl shadow-sm transition-shadow hover:shadow-md',
       )}
       aria-live="polite"
     >

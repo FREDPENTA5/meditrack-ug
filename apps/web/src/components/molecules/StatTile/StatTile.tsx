@@ -43,7 +43,7 @@ export function StatTile({
   return (
     <div
       className={cn(
-        'rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs transition-shadow hover:shadow-sm',
+        'rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md',
         className,
       )}
     >
