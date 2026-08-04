@@ -40,10 +40,7 @@ export default function DashboardPage() {
 
     return (
       <div className="space-y-6">
-        <DashboardSection
-          title="Stock status"
-          description="Live counts across your facility formulary"
-        >
+        <DashboardSection title="Stock status" description="Current stock levels at your facility">
           {summary.isLoading ? (
             <KpiSkeleton count={4} />
           ) : (
