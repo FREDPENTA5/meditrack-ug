@@ -86,7 +86,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false, listClassName }
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-2.5 text-[12px] font-bold uppercase tracking-wider transition-all rounded-lg outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
               activeTab === 'CRITICAL'
-                ? 'bg-white text-danger-700 shadow-sm ring-1 ring-neutral-200/50'
+                ? 'bg-white text-danger-700 shadow-sm'
                 : 'text-muted-foreground hover:text-foreground hover:bg-neutral-200/50',
             )}
           >
@@ -103,7 +103,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false, listClassName }
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-2.5 text-[12px] font-bold uppercase tracking-wider transition-all rounded-lg outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
               activeTab === 'WARNING'
-                ? 'bg-white text-warning-700 shadow-sm ring-1 ring-neutral-200/50'
+                ? 'bg-white text-warning-700 shadow-sm'
                 : 'text-muted-foreground hover:text-foreground hover:bg-neutral-200/50',
             )}
           >
