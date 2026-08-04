@@ -182,7 +182,7 @@ export default function StockEntryPage() {
           </div>
 
           <Card className="shadow-sm border-border overflow-hidden">
-            <CardContent className="p-0">
+            <CardContent className="p-0 max-h-[calc(100vh-250px)] min-h-[400px] overflow-y-auto">
               {stock.isLoading ? (
                 <div className="space-y-2 p-6">
                   <Skeleton className="h-10 w-full" />
@@ -198,7 +198,7 @@ export default function StockEntryPage() {
                 </div>
               ) : (
                 <Table>
-                  <TableHeader className="bg-neutral-50/50">
+                  <TableHeader className="bg-neutral-50/50 sticky top-0 z-10 shadow-sm">
                     <TableRow className="hover:bg-transparent">
                       <TableHead className="font-medium h-12">Drug</TableHead>
                       <TableHead className="font-medium h-12">Quantity</TableHead>
