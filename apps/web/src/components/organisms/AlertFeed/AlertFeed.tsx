@@ -78,41 +78,43 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
       )}
       aria-live="polite"
     >
-      <div className="flex border-b border-border/60">
-        <button
-          onClick={() => setActiveTab('CRITICAL')}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 py-3.5 text-[12px] font-bold uppercase tracking-wider transition-colors border-b-2',
-            activeTab === 'CRITICAL'
-              ? 'border-danger-500 text-danger-700 bg-danger-50/40'
-              : 'border-transparent text-muted-foreground hover:bg-neutral-50 hover:text-foreground',
-          )}
-        >
-          Critical
-          <Badge
-            variant={activeTab === 'CRITICAL' ? 'destructive' : 'secondary'}
-            className="px-1.5 py-0 min-w-[20px] justify-center"
+      <div className="p-2 border-b border-border/60 bg-neutral-50/50">
+        <div className="flex bg-neutral-100 p-1 rounded-xl">
+          <button
+            onClick={() => setActiveTab('CRITICAL')}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-2 py-2.5 text-[12px] font-bold uppercase tracking-wider transition-all rounded-lg',
+              activeTab === 'CRITICAL'
+                ? 'bg-white text-danger-700 shadow-sm ring-1 ring-neutral-200/50'
+                : 'text-muted-foreground hover:text-foreground hover:bg-neutral-200/50',
+            )}
           >
-            {criticalAlerts.length}
-          </Badge>
-        </button>
-        <button
-          onClick={() => setActiveTab('WARNING')}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 py-3.5 text-[12px] font-bold uppercase tracking-wider transition-colors border-b-2 border-l border-l-border/60',
-            activeTab === 'WARNING'
-              ? 'border-warning-500 text-warning-700 bg-warning-50/40'
-              : 'border-transparent text-muted-foreground hover:bg-neutral-50 hover:text-foreground',
-          )}
-        >
-          Warning
-          <Badge
-            variant={activeTab === 'WARNING' ? 'warning' : 'secondary'}
-            className="px-1.5 py-0 min-w-[20px] justify-center"
+            Critical
+            <Badge
+              variant={activeTab === 'CRITICAL' ? 'destructive' : 'secondary'}
+              className="px-1.5 py-0 min-w-[20px] justify-center"
+            >
+              {criticalAlerts.length}
+            </Badge>
+          </button>
+          <button
+            onClick={() => setActiveTab('WARNING')}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-2 py-2.5 text-[12px] font-bold uppercase tracking-wider transition-all rounded-lg',
+              activeTab === 'WARNING'
+                ? 'bg-white text-warning-700 shadow-sm ring-1 ring-neutral-200/50'
+                : 'text-muted-foreground hover:text-foreground hover:bg-neutral-200/50',
+            )}
           >
-            {warningAlerts.length}
-          </Badge>
-        </button>
+            Warning
+            <Badge
+              variant={activeTab === 'WARNING' ? 'warning' : 'secondary'}
+              className="px-1.5 py-0 min-w-[20px] justify-center"
+            >
+              {warningAlerts.length}
+            </Badge>
+          </button>
+        </div>
       </div>
 
       <ul className="divide-y divide-border/60 max-h-[400px] overflow-y-auto">
