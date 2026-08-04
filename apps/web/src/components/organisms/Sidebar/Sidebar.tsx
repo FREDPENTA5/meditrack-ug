@@ -97,7 +97,7 @@ function SidebarNav({
             alt="MediTrack Logo"
             className={cn(
               'object-contain transition-all duration-200 brightness-0 invert opacity-90',
-              collapsed ? 'h-8' : 'h-12 w-auto',
+              collapsed ? 'h-10' : 'h-24 w-auto',
             )}
           />
         </div>
