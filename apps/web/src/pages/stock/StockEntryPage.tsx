@@ -86,9 +86,9 @@ export default function StockEntryPage() {
     <div className="w-[97%] max-w-[1400px] mx-auto space-y-8 pb-10">
       <PageHeader title="Stock Entry" description="Log current drug quantities for your facility" />
 
-      <div className="grid gap-8 xl:grid-cols-[380px_1fr] items-start">
+      <div className="grid gap-8 xl:grid-cols-[380px_1fr] xl:items-stretch items-start">
         {/* LEFT PANEL - IMMERSIVE FORM */}
-        <Card className="sticky top-24 overflow-hidden border-border bg-card shadow-lg shadow-neutral-200/40 flex flex-col xl:h-[calc(100vh-250px)] xl:min-h-[500px]">
+        <Card className="sticky top-24 overflow-hidden border-border bg-card shadow-lg shadow-neutral-200/40 flex flex-col h-full">
           <div className="bg-primary px-6 py-8 sm:px-8 relative overflow-hidden shrink-0 rounded-t-xl shadow-inner">
             <div className="absolute -top-6 -right-6 p-8 opacity-20 transform rotate-12">
               <Pill className="w-48 h-48 text-white" strokeWidth={1} />
@@ -173,8 +173,8 @@ export default function StockEntryPage() {
         </Card>
 
         {/* RIGHT PANEL - STAGGERED TABLE */}
-        <div className="space-y-4">
-          <div className="flex flex-col px-2 pb-6 pt-2">
+        <div className="flex flex-col space-y-4 xl:h-[calc(100vh-250px)] xl:min-h-[500px]">
+          <div className="flex flex-col px-2 pb-6 pt-2 shrink-0">
             <h3 className="font-heading text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground leading-none">
               Current Stock
               <br />
@@ -186,7 +186,7 @@ export default function StockEntryPage() {
             </span>
           </div>
 
-          <div className="xl:h-[calc(100vh-250px)] xl:min-h-[500px] flex flex-col">
+          <div className="flex-1 flex flex-col min-h-0 bg-transparent">
             <div className="p-0 flex-1 overflow-y-auto bg-card">
               {stock.isLoading ? (
                 <div className="space-y-2 p-6">
