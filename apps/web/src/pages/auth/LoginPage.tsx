@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import { Github } from 'lucide-react';
 import { LoginSchema, type LoginInput } from '@meditrack/shared';
 import { FormField } from '../../components/molecules/FormField';
 import { Button } from '../../components/atoms/Button';
@@ -148,9 +147,14 @@ export default function LoginPage() {
           variant="outline"
           type="button"
           className="flex-1 h-12 rounded-xl border-neutral-200 bg-white hover:bg-neutral-50"
-          aria-label="Sign in with GitHub"
+          aria-label="Sign in with Microsoft"
         >
-          <Github className="h-5 w-5" />
+          <svg className="h-5 w-5" viewBox="0 0 21 21">
+            <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+            <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+            <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+            <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+          </svg>
         </Button>
       </div>
     </div>
