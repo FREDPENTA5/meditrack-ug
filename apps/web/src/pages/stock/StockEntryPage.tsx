@@ -89,14 +89,14 @@ export default function StockEntryPage() {
       <div className="grid gap-8 xl:grid-cols-[380px_1fr] items-start">
         {/* LEFT PANEL - IMMERSIVE FORM */}
         <Card className="sticky top-24 overflow-hidden border-border bg-card shadow-lg shadow-neutral-200/40 flex flex-col xl:h-[calc(100vh-250px)] xl:min-h-[500px]">
-          <div className="bg-primary/5 px-6 py-8 sm:px-8 border-b border-border/50 relative overflow-hidden shrink-0">
-            <div className="absolute top-0 right-0 p-8 opacity-10">
-              <Pill className="w-32 h-32 text-primary" />
+          <div className="bg-primary px-6 py-8 sm:px-8 relative overflow-hidden shrink-0 rounded-t-xl shadow-inner">
+            <div className="absolute -top-6 -right-6 p-8 opacity-20 transform rotate-12">
+              <Pill className="w-48 h-48 text-white" strokeWidth={1} />
             </div>
-            <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground relative z-10">
+            <h2 className="font-heading text-3xl font-black tracking-tight text-white relative z-10">
               Log Inventory
             </h2>
-            <p className="text-sm text-muted-foreground mt-2 relative z-10">
+            <p className="text-sm text-white/90 mt-2 relative z-10 font-medium max-w-[85%] leading-relaxed">
               Select a drug and accurately record the current physical count in the storage
               facility.
             </p>
