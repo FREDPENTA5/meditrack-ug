@@ -6,6 +6,7 @@ import { AuthBootstrap } from './features/auth/components/AuthBootstrap';
 import { GuestRoute } from './features/auth/components/GuestRoute';
 import { HomeRoute } from './features/auth/components/HomeRoute';
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
+import { Skeleton } from './components/ui/skeleton';
 
 // Lazy load pages for code splitting to reduce initial bundle size
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -20,10 +21,44 @@ const ReportsPage = lazy(() => import('./pages/reports/ReportsPage'));
 const UsersPage = lazy(() => import('./pages/users/UsersPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 
-// A simple loading fallback for lazy-loaded routes
+// A skeleton loading fallback for lazy-loaded routes
 const PageLoader = () => (
-  <div className="flex min-h-[50vh] items-center justify-center">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600"></div>
+  <div className="flex h-screen bg-background">
+    <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 p-6 sm:p-8 overflow-hidden space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-[250px]" />
+          <Skeleton className="h-4 w-[350px]" />
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-[120px]" />
+            <Skeleton className="h-9 w-[120px]" />
+          </div>
+          <div className="rounded-xl border border-border/60 shadow-sm bg-card overflow-hidden">
+            <div className="p-4 border-b border-border/60">
+              <div className="flex gap-4">
+                <Skeleton className="h-5 flex-1" />
+                <Skeleton className="h-5 flex-1" />
+                <Skeleton className="h-5 flex-1" />
+                <Skeleton className="h-5 flex-1" />
+              </div>
+            </div>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="p-4 border-b border-border/60 last:border-0">
+                <div className="flex gap-4">
+                  <Skeleton className="h-4 flex-1" />
+                  <Skeleton className="h-4 flex-1" />
+                  <Skeleton className="h-4 flex-1" />
+                  <Skeleton className="h-4 flex-1" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 );
 
