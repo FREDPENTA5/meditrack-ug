@@ -78,20 +78,21 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
       )}
       aria-live="polite"
     >
-      <div className="flex justify-between px-4 pt-1 pb-1 border-b border-border/60">
+      <div className="flex justify-start gap-4 px-4 bg-black">
         <button
           onClick={() => setActiveTab('CRITICAL')}
           className={cn(
-            'px-2 py-2 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
-            activeTab === 'CRITICAL'
-              ? 'text-neutral-900'
-              : 'text-neutral-400 hover:text-neutral-600',
+            'px-2 py-4 text-[11px] font-bold uppercase tracking-widest transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
+            activeTab === 'CRITICAL' ? 'text-white' : 'text-white/50 hover:text-white/80',
           )}
         >
           Critical
           <Badge
             variant={activeTab === 'CRITICAL' ? 'destructive' : 'secondary'}
-            className="px-1.5 py-0 min-w-[20px] justify-center"
+            className={cn(
+              'px-1.5 py-0 min-w-[20px] justify-center',
+              activeTab !== 'CRITICAL' && 'bg-white/10 text-white/50 hover:bg-white/10',
+            )}
           >
             {criticalAlerts.length}
           </Badge>
@@ -99,16 +100,17 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
         <button
           onClick={() => setActiveTab('WARNING')}
           className={cn(
-            'px-2 py-2 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
-            activeTab === 'WARNING'
-              ? 'text-neutral-900'
-              : 'text-neutral-400 hover:text-neutral-600',
+            'px-2 py-4 text-[11px] font-bold uppercase tracking-widest transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
+            activeTab === 'WARNING' ? 'text-white' : 'text-white/50 hover:text-white/80',
           )}
         >
           Warning
           <Badge
             variant={activeTab === 'WARNING' ? 'warning' : 'secondary'}
-            className="px-1.5 py-0 min-w-[20px] justify-center"
+            className={cn(
+              'px-1.5 py-0 min-w-[20px] justify-center',
+              activeTab !== 'WARNING' && 'bg-white/10 text-white/50 hover:bg-white/10',
+            )}
           >
             {warningAlerts.length}
           </Badge>

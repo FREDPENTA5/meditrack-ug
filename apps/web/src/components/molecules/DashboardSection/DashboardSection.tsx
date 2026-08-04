@@ -20,16 +20,16 @@ export function DashboardSection({
   const showHeader = title || description || action;
 
   return (
-    <section className={cn('space-y-4', className)}>
+    <section className={cn('space-y-6', className)}>
       {showHeader && (
         <div className="flex items-end justify-between gap-4">
-          <div className="min-w-0 space-y-0.5">
+          <div className="min-w-0 space-y-1">
             {title && (
-              <h2 className="font-heading text-base font-semibold tracking-tight text-foreground">
+              <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-foreground">
                 {title}
               </h2>
             )}
-            {description && <p className="text-[13px] text-muted-foreground">{description}</p>}
+            {description && <p className="text-sm text-muted-foreground">{description}</p>}
           </div>
           {action && <div className="shrink-0">{action}</div>}
         </div>
