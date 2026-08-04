@@ -90,18 +90,16 @@ function SidebarNav({
         )}
       >
         <div
-          className={cn('flex items-center w-full', collapsed ? 'justify-center' : 'justify-start')}
+          className={cn('flex items-center', collapsed ? 'justify-center' : 'justify-start w-full')}
         >
-          <div className="bg-white rounded-xl px-3 py-2 w-full flex justify-center shadow-sm">
-            <img
-              src="/logo.png"
-              alt="MediTrack Logo"
-              className={cn(
-                'object-contain transition-all duration-200',
-                collapsed ? 'h-8' : 'h-16 w-auto',
-              )}
-            />
-          </div>
+          <img
+            src="/logo.png"
+            alt="MediTrack Logo"
+            className={cn(
+              'object-contain transition-all duration-200 brightness-0 invert opacity-90',
+              collapsed ? 'h-8' : 'h-12 w-auto',
+            )}
+          />
         </div>
         {onClose && (
           <Button
