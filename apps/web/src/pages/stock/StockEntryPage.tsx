@@ -88,8 +88,8 @@ export default function StockEntryPage() {
 
       <div className="grid gap-8 xl:grid-cols-[380px_1fr] items-start">
         {/* LEFT PANEL - IMMERSIVE FORM */}
-        <Card className="sticky top-24 overflow-hidden border-border bg-card shadow-lg shadow-neutral-200/40">
-          <div className="bg-primary/5 px-6 py-8 sm:px-8 border-b border-border/50 relative overflow-hidden">
+        <Card className="sticky top-24 overflow-hidden border-border bg-card shadow-lg shadow-neutral-200/40 flex flex-col xl:h-[calc(100vh-250px)] xl:min-h-[500px]">
+          <div className="bg-primary/5 px-6 py-8 sm:px-8 border-b border-border/50 relative overflow-hidden shrink-0">
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <Pill className="w-32 h-32 text-primary" />
             </div>
@@ -101,7 +101,7 @@ export default function StockEntryPage() {
               facility.
             </p>
           </div>
-          <CardContent className="p-6 sm:p-8">
+          <CardContent className="p-6 sm:p-8 flex-1 overflow-y-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-3">
                 <Label htmlFor="drug" className="text-sm font-medium">
@@ -181,8 +181,8 @@ export default function StockEntryPage() {
             </span>
           </div>
 
-          <Card className="shadow-sm border-border overflow-hidden">
-            <CardContent className="p-0 max-h-[calc(100vh-250px)] min-h-[400px] overflow-y-auto">
+          <Card className="shadow-sm border-border overflow-hidden xl:h-[calc(100vh-250px)] xl:min-h-[500px] flex flex-col">
+            <CardContent className="p-0 flex-1 overflow-y-auto">
               {stock.isLoading ? (
                 <div className="space-y-2 p-6">
                   <Skeleton className="h-10 w-full" />
