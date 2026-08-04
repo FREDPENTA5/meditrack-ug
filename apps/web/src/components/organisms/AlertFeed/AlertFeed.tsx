@@ -87,50 +87,59 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
     categoryAlerts: DashboardAlert[],
     titleClass: string,
     borderClass: string,
+    emptyMessage: string,
   ) => {
-    if (!categoryAlerts.length) return null;
     return (
       <div
-        className={cn('flex flex-col rounded-[14px] border overflow-hidden shadow-xs', borderClass)}
+        className={cn(
+          'flex flex-col h-full rounded-[14px] border overflow-hidden shadow-xs',
+          borderClass,
+        )}
       >
         <div
           className={cn(
-            'sticky top-0 z-10 px-5 py-3 text-[12px] font-bold uppercase tracking-wider border-b',
+            'sticky top-0 z-10 px-5 py-3 text-[12px] font-bold uppercase tracking-wider border-b bg-white',
             titleClass,
             borderClass,
           )}
         >
           {title} ({categoryAlerts.length})
         </div>
-        <ul className="divide-y divide-neutral-100 max-h-[300px] overflow-y-auto bg-white">
-          {categoryAlerts.map((alert) => (
-            <li key={alert.id}>
-              <button
-                type="button"
-                onClick={() => navigate(`/alerts/${alert.id}`)}
-                className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
-              >
-                <AlertIcon severity={alert.severity} />
-                <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4 items-center">
-                  <p className="truncate text-[13px] font-semibold text-foreground">
-                    {alert.drugName}
-                  </p>
-                  <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-right">
-                    {alert.facilityName}
-                    <span className="mx-1.5 text-border hidden sm:inline-block">·</span>
-                    <span className="text-[11px]">
-                      {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-                    </span>
-                  </p>
-                </div>
-                <ChevronRight
-                  className="ml-3 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
-                  aria-hidden="true"
-                />
-              </button>
-            </li>
-          ))}
-        </ul>
+        {categoryAlerts.length > 0 ? (
+          <ul className="divide-y divide-neutral-100 max-h-[300px] overflow-y-auto bg-white flex-1">
+            {categoryAlerts.map((alert) => (
+              <li key={alert.id}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/alerts/${alert.id}`)}
+                  className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
+                >
+                  <AlertIcon severity={alert.severity} />
+                  <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4 items-center">
+                    <p className="truncate text-[13px] font-semibold text-foreground">
+                      {alert.drugName}
+                    </p>
+                    <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-right">
+                      {alert.facilityName}
+                      <span className="mx-1.5 text-border hidden sm:inline-block">·</span>
+                      <span className="text-[11px]">
+                        {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
+                      </span>
+                    </p>
+                  </div>
+                  <ChevronRight
+                    className="ml-3 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center bg-neutral-50/50">
+            <p className="text-[13px] font-medium text-muted-foreground">{emptyMessage}</p>
+          </div>
+        )}
       </div>
     );
   };
@@ -150,12 +159,14 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
         criticalAlerts,
         'text-danger-700 bg-danger-50/50',
         'border-danger-100',
+        'No critical alerts active.',
       )}
       {renderCategory(
         'Warning Alerts',
         warningAlerts,
         'text-warning-700 bg-warning-50/50',
         'border-warning-100',
+        'No warning alerts active.',
       )}
     </div>
   );
