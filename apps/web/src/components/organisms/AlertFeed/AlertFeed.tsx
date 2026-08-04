@@ -79,7 +79,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false, listClassName }
       )}
       aria-live="polite"
     >
-      <div className="p-2 border-b border-border/60 bg-neutral-50/50">
+      <div className="p-2">
         <div className="flex bg-neutral-100 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab('CRITICAL')}
