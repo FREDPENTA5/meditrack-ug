@@ -27,7 +27,7 @@ export default function LoginPage() {
   return (
     <div className="space-y-8">
       <header className="flex flex-col items-center text-center">
-        <img src="/logo.png" alt="MediTrack Logo" className="h-24 w-auto mb-6 object-contain" />
+        <img src="/logo.png" alt="MediTrack Logo" className="h-14 w-auto mb-6 object-contain" />
         <h1 className="font-heading text-3xl font-bold tracking-tight text-neutral-900">
           Welcome back
         </h1>
