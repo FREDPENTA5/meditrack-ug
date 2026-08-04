@@ -93,11 +93,11 @@ function SidebarNav({
           className={cn('flex items-center', collapsed ? 'justify-center' : 'justify-start w-full')}
         >
           <img
-            src="/logo.png"
+            src={collapsed ? '/logo.png' : '/logo-full.png'}
             alt="MediTrack Logo"
             className={cn(
               'object-contain transition-all duration-200',
-              collapsed ? 'h-10' : 'h-16 w-auto',
+              collapsed ? 'h-10' : 'h-9 w-auto mt-1',
             )}
           />
         </div>
