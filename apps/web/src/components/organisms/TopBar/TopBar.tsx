@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, LogOut, Menu, PanelLeft, Settings, User } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -97,6 +97,9 @@ export function TopBar({ alertCount = 0 }: TopBarProps) {
                 aria-label="Account menu"
               >
                 <Avatar className="h-8 w-8">
+                  {user.fullName.toLowerCase().includes('sarah') && (
+                    <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
+                  )}
                   <AvatarFallback className="text-xs">{getInitials(user.fullName)}</AvatarFallback>
                 </Avatar>
                 <ChevronDown className="hidden h-4 w-4 opacity-50 md:block" aria-hidden="true" />

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/cn';
@@ -148,6 +148,9 @@ function SidebarNav({
             )}
           >
             <Avatar className="h-9 w-9 border border-neutral-200">
+              {user.fullName.toLowerCase().includes('sarah') && (
+                <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
+              )}
               <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
                 {getInitials(user.fullName)}
               </AvatarFallback>
