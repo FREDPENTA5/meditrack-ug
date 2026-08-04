@@ -174,15 +174,20 @@ export default function StockEntryPage() {
 
         {/* RIGHT PANEL - STAGGERED TABLE */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between px-2">
-            <h3 className="text-lg font-semibold tracking-tight">Current Stock Levels</h3>
-            <span className="text-sm text-muted-foreground">
-              {stock.data?.length ?? 0} total items
+          <div className="flex flex-col px-2 pb-6 pt-2">
+            <h3 className="font-heading text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground leading-none">
+              Current Stock
+              <br />
+              Levels
+            </h3>
+            <span className="text-sm text-muted-foreground mt-4">
+              {stock.data?.length ?? 0} total items. Click to select the text box. Click again or
+              double click to start editing the text.
             </span>
           </div>
 
-          <Card className="shadow-sm border-border overflow-hidden xl:h-[calc(100vh-250px)] xl:min-h-[500px] flex flex-col">
-            <CardContent className="p-0 flex-1 overflow-y-auto">
+          <div className="xl:h-[calc(100vh-250px)] xl:min-h-[500px] flex flex-col">
+            <div className="p-0 flex-1 overflow-y-auto bg-card">
               {stock.isLoading ? (
                 <div className="space-y-2 p-6">
                   <Skeleton className="h-10 w-full" />
@@ -198,12 +203,20 @@ export default function StockEntryPage() {
                 </div>
               ) : (
                 <Table>
-                  <TableHeader className="bg-neutral-50/50 sticky top-0 z-10 shadow-sm">
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-medium h-12">Drug</TableHead>
-                      <TableHead className="font-medium h-12">Quantity</TableHead>
-                      <TableHead className="font-medium h-12">Status</TableHead>
-                      <TableHead className="font-medium h-12 text-right">Last updated</TableHead>
+                  <TableHeader className="bg-black sticky top-0 z-10">
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableHead className="font-bold text-white text-[11px] uppercase tracking-widest h-14 px-6">
+                        Drug
+                      </TableHead>
+                      <TableHead className="font-bold text-white text-[11px] uppercase tracking-widest h-14 px-6">
+                        Quantity
+                      </TableHead>
+                      <TableHead className="font-bold text-white text-[11px] uppercase tracking-widest h-14 px-6">
+                        Status
+                      </TableHead>
+                      <TableHead className="font-bold text-white text-[11px] uppercase tracking-widest h-14 px-6 text-right">
+                        Last updated
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <motion.tbody
@@ -218,7 +231,7 @@ export default function StockEntryPage() {
                         variants={itemVariants}
                         className="group hover:bg-muted/50 transition-colors"
                       >
-                        <TableCell className="font-medium py-4">
+                        <TableCell className="font-medium py-5 px-6">
                           <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                               <Pill className="h-4 w-4 text-primary" />
@@ -226,16 +239,16 @@ export default function StockEntryPage() {
                             <span className="text-foreground">{row.drugName}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="tabular-nums font-medium text-foreground py-4">
+                        <TableCell className="tabular-nums font-medium text-foreground py-5 px-6">
                           {row.quantity.toLocaleString()}{' '}
                           <span className="text-muted-foreground text-sm font-normal ml-1">
                             {row.unit}
                           </span>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-5 px-6">
                           <StatusBadge status={row.status} />
                         </TableCell>
-                        <TableCell className="text-right text-sm text-muted-foreground py-4">
+                        <TableCell className="text-right text-sm text-muted-foreground py-5 px-6">
                           {format(new Date(row.entryDate), 'MMM d, yyyy')}
                         </TableCell>
                       </motion.tr>
@@ -243,8 +256,8 @@ export default function StockEntryPage() {
                   </motion.tbody>
                 </Table>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
