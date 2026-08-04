@@ -86,7 +86,7 @@ export default function DashboardPage() {
                 alerts={alerts.data}
                 isLoading={alerts.isLoading}
                 embedded
-                listClassName="max-h-[65vh]"
+                listClassName="h-[calc(100vh-240px)] min-h-[400px]"
               />
             </CardContent>
           </Card>
