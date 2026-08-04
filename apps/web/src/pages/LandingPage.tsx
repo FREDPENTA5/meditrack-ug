@@ -10,7 +10,7 @@ export default function LandingPage() {
       <header className="absolute top-0 w-full z-50 bg-transparent">
         <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 lg:px-12">
           <Link to="/" className="flex items-center">
-            <img src="/logo-full.png" alt="MediTrack UG" className="h-10 md:h-12 object-contain" />
+            <img src="/logo-full.png" alt="MediTrack UG" className="h-14 md:h-16 object-contain" />
           </Link>
           <div className="flex items-center gap-6">
             <Link
@@ -223,7 +223,7 @@ export default function LandingPage() {
       <footer className="bg-white border-t border-neutral-200 py-12 px-6 lg:px-12">
         <div className="mx-auto max-w-[1200px] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3 text-neutral-500">
-            <img src="/logo.png" alt="MediTrack" className="h-8 object-contain" />
+            <img src="/logo.png" alt="MediTrack" className="h-12 object-contain" />
             <span className="font-medium text-sm">© {new Date().getFullYear()} MediTrack UG.</span>
           </div>
           <div className="flex gap-8">

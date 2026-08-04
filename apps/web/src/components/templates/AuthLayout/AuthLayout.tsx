@@ -17,7 +17,7 @@ export function AuthLayout() {
               <img
                 src="/logo-full.png"
                 alt="MediTrack UG"
-                className="h-20 w-auto object-contain brightness-0 invert"
+                className="h-24 w-auto object-contain brightness-0 invert"
               />
             </Link>
           </div>
@@ -48,7 +48,7 @@ export function AuthLayout() {
             Back to Home
           </Link>
           <div className="flex items-center lg:hidden">
-            <img src="/logo.png" alt="MediTrack UG" className="h-12 object-contain" />
+            <img src="/logo.png" alt="MediTrack UG" className="h-16 object-contain" />
           </div>
         </div>
 
