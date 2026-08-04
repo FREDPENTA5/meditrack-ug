@@ -125,16 +125,15 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
                 className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
               >
                 <AlertIcon severity={alert.severity} />
-                <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4 items-center">
+                <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-[1.5fr_1fr_auto] gap-1 sm:gap-4 items-center">
                   <p className="truncate text-[13px] font-semibold text-foreground">
                     {alert.drugName}
                   </p>
-                  <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-right">
+                  <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-left">
                     {alert.facilityName}
-                    <span className="mx-1.5 text-border hidden sm:inline-block">·</span>
-                    <span className="text-[11px]">
-                      {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-                    </span>
+                  </p>
+                  <p className="truncate text-[11px] font-medium text-muted-foreground sm:text-right hidden sm:block">
+                    {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
                   </p>
                 </div>
                 <ChevronRight
