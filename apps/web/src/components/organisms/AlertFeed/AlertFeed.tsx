@@ -11,6 +11,7 @@ interface AlertFeedProps {
   alerts?: DashboardAlert[];
   isLoading?: boolean;
   embedded?: boolean;
+  listClassName?: string;
 }
 
 function severityToBadge(severity: DashboardAlert['severity']) {
@@ -41,7 +42,7 @@ function AlertIcon({ severity }: { severity: DashboardAlert['severity'] }) {
   );
 }
 
-export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProps) {
+export function AlertFeed({ alerts, isLoading, embedded = false, listClassName }: AlertFeedProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'CRITICAL' | 'WARNING'>('CRITICAL');
 
@@ -117,7 +118,12 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
         </div>
       </div>
 
-      <ul className="divide-y divide-border/60 max-h-[400px] overflow-y-auto">
+      <ul
+        className={cn(
+          'divide-y divide-border/60 overflow-y-auto',
+          listClassName || 'max-h-[400px]',
+        )}
+      >
         {displayAlerts.length > 0 ? (
           displayAlerts.map((alert) => (
             <li key={alert.id}>

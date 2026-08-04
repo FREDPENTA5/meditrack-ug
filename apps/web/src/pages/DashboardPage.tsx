@@ -82,7 +82,12 @@ export default function DashboardPage() {
         >
           <Card className="shadow-sm">
             <CardContent className="p-0">
-              <AlertFeed alerts={alerts.data} isLoading={alerts.isLoading} embedded />
+              <AlertFeed
+                alerts={alerts.data}
+                isLoading={alerts.isLoading}
+                embedded
+                listClassName="max-h-[calc(100vh-320px)]"
+              />
             </CardContent>
           </Card>
         </DashboardSection>
