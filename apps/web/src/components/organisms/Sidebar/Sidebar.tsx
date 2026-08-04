@@ -56,8 +56,8 @@ function SidebarNav({
           cn(
             'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-150',
             isActive
-              ? 'bg-[var(--surface-sidebar-item-active)] text-[var(--sidebar-active-text)] font-semibold'
-              : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800',
+              ? 'bg-white/15 text-white font-semibold'
+              : 'text-primary-foreground/70 hover:bg-white/10 hover:text-white',
             collapsed && 'justify-center px-2',
           )
         }
@@ -81,7 +81,7 @@ function SidebarNav({
   };
 
   return (
-    <div className="flex h-full flex-col bg-white text-neutral-900 border-r border-neutral-100">
+    <div className="flex h-full flex-col bg-primary text-primary-foreground">
       {/* Logo */}
       <div
         className={cn(
@@ -96,7 +96,7 @@ function SidebarNav({
             src="/logo.png"
             alt="MediTrack Logo"
             className={cn(
-              'object-contain transition-all duration-200',
+              'object-contain transition-all duration-200 brightness-0 invert',
               collapsed ? 'h-10' : 'h-24 w-auto',
             )}
           />
@@ -105,7 +105,7 @@ function SidebarNav({
           <Button
             variant="ghost"
             size="icon"
-            className="text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 lg:hidden"
+            className="text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -117,7 +117,7 @@ function SidebarNav({
       <nav className="flex-1 overflow-y-auto px-3 pb-3" aria-label="Main navigation">
         {/* Main Menu section */}
         {!collapsed && mainItems.length > 0 && (
-          <p className="mb-2 mt-1 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+          <p className="mb-2 mt-1 px-3 text-[11px] font-semibold uppercase tracking-widest text-primary-foreground/50">
             Main Menu
           </p>
         )}
@@ -127,40 +127,38 @@ function SidebarNav({
         {managementItems.length > 0 && (
           <>
             {!collapsed && (
-              <p className="mb-2 mt-6 px-3 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+              <p className="mb-2 mt-6 px-3 text-[11px] font-semibold uppercase tracking-widest text-primary-foreground/50">
                 Management
               </p>
             )}
-            {collapsed && <Separator className="my-3 bg-neutral-100" />}
+            {collapsed && <Separator className="my-3 bg-white/10" />}
             <div className="space-y-0.5">{managementItems.map(renderNavItem)}</div>
           </>
         )}
       </nav>
 
       {/* User profile */}
-      <div className="border-t border-neutral-100">
+      <div className="border-t border-white/10">
         <div className={cn('p-3', collapsed && 'flex justify-center')}>
           <NavLink
             to="/settings"
             className={cn(
-              'flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-neutral-100',
+              'flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-white/10',
               collapsed && 'p-1.5',
             )}
           >
-            <Avatar className="h-11 w-11 border border-neutral-200">
+            <Avatar className="h-11 w-11 border border-white/20">
               {user.fullName.toLowerCase().includes('sarah') && (
                 <AvatarImage src="/sarah.jpg" alt={user.fullName} className="object-cover" />
               )}
-              <AvatarFallback className="bg-neutral-100 text-xs font-semibold text-neutral-600">
+              <AvatarFallback className="bg-white/20 text-xs font-semibold text-white">
                 {getInitials(user.fullName)}
               </AvatarFallback>
             </Avatar>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-neutral-900">
-                  {user.fullName}
-                </p>
-                <p className="truncate text-[11px] font-medium text-neutral-400">
+                <p className="truncate text-[13px] font-semibold text-white">{user.fullName}</p>
+                <p className="truncate text-[11px] font-medium text-primary-foreground/60">
                   {formatRole(user.role)}
                 </p>
               </div>
