@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, AlertCircle, AlertTriangle, Info } from 'lucide-react';
@@ -83,7 +82,7 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
         <button
           onClick={() => setActiveTab('CRITICAL')}
           className={cn(
-            'relative px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2',
+            'px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
             activeTab === 'CRITICAL'
               ? 'text-neutral-900'
               : 'text-neutral-400 hover:text-neutral-600',
@@ -96,18 +95,11 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
           >
             {criticalAlerts.length}
           </Badge>
-          {activeTab === 'CRITICAL' && (
-            <motion.div
-              layoutId="activeAlertFeedTab"
-              className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900"
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            />
-          )}
         </button>
         <button
           onClick={() => setActiveTab('WARNING')}
           className={cn(
-            'relative px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2',
+            'px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0',
             activeTab === 'WARNING'
               ? 'text-neutral-900'
               : 'text-neutral-400 hover:text-neutral-600',
@@ -120,61 +112,42 @@ export function AlertFeed({ alerts, isLoading, embedded = false }: AlertFeedProp
           >
             {warningAlerts.length}
           </Badge>
-          {activeTab === 'WARNING' && (
-            <motion.div
-              layoutId="activeAlertFeedTab"
-              className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900"
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            />
-          )}
         </button>
       </div>
 
-      <ul className="divide-y divide-border/60 max-h-[400px] overflow-y-auto overflow-x-hidden min-h-[150px]">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: activeTab === 'CRITICAL' ? -10 : 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: activeTab === 'CRITICAL' ? 10 : -10 }}
-            transition={{ duration: 0.15 }}
-          >
-            {displayAlerts.length > 0 ? (
-              displayAlerts.map((alert) => (
-                <li key={alert.id}>
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/alerts/${alert.id}`)}
-                    className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
-                  >
-                    <AlertIcon severity={alert.severity} />
-                    <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-[1.5fr_1fr_auto] gap-1 sm:gap-4 items-center">
-                      <p className="truncate text-[13px] font-semibold text-foreground">
-                        {alert.drugName}
-                      </p>
-                      <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-left">
-                        {alert.facilityName}
-                      </p>
-                      <p className="truncate text-[11px] font-medium text-muted-foreground sm:text-right hidden sm:block">
-                        {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-                      </p>
-                    </div>
-                    <ChevronRight
-                      className="ml-3 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </li>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
-                <p className="text-[13px] font-medium">
-                  No {activeTab.toLowerCase()} alerts active.
-                </p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+      <ul className="divide-y divide-border/60 max-h-[400px] overflow-y-auto">
+        {displayAlerts.length > 0 ? (
+          displayAlerts.map((alert) => (
+            <li key={alert.id}>
+              <button
+                type="button"
+                onClick={() => navigate(`/alerts/${alert.id}`)}
+                className="group flex w-full items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5 outline-none focus:outline-none focus-visible:outline-none focus-visible:bg-muted/40"
+              >
+                <AlertIcon severity={alert.severity} />
+                <div className="min-w-0 flex-1 ml-4 grid grid-cols-1 sm:grid-cols-[1.5fr_1fr_auto] gap-1 sm:gap-4 items-center">
+                  <p className="truncate text-[13px] font-semibold text-foreground">
+                    {alert.drugName}
+                  </p>
+                  <p className="truncate text-[12px] font-medium text-muted-foreground sm:text-left">
+                    {alert.facilityName}
+                  </p>
+                  <p className="truncate text-[11px] font-medium text-muted-foreground sm:text-right hidden sm:block">
+                    {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
+                  </p>
+                </div>
+                <ChevronRight
+                  className="ml-3 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground"
+                  aria-hidden="true"
+                />
+              </button>
+            </li>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
+            <p className="text-[13px] font-medium">No {activeTab.toLowerCase()} alerts active.</p>
+          </div>
+        )}
       </ul>
     </div>
   );
