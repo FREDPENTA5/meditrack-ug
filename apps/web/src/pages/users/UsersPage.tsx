@@ -206,11 +206,13 @@ export default function UsersPage() {
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
                       <option value="">Select a facility...</option>
-                      {facilities.data?.map((f) => (
-                        <option key={f.id} value={f.id}>
-                          {f.name}
-                        </option>
-                      ))}
+                      {facilities.data
+                        ?.filter((f) => f.isActive)
+                        .map((f) => (
+                          <option key={f.id} value={f.id}>
+                            {f.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 )}

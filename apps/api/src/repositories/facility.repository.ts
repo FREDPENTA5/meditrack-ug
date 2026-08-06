@@ -4,7 +4,6 @@ export const facilityRepository = {
   findMany(scope: { facilityId?: string; districtId?: string; national?: boolean }) {
     return prisma.facility.findMany({
       where: {
-        isActive: true,
         ...(scope.facilityId ? { id: scope.facilityId } : {}),
         ...(scope.districtId ? { districtId: scope.districtId } : {}),
       },
